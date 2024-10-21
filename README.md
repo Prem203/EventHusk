@@ -46,6 +46,8 @@ WHERE u.userType = 'Organizer';
 ```
 **Explanation:** This query retrieves the names of events, the corresponding venues, and the organizer names by joining the `Events`, `EventVenueMapping`, `Venue`, and `Users` tables.
 
+**Output Example:**
+
 | eventName           | venueName             | organizerName  |
 |---------------------|-----------------------|----------------|
 | Charity Fundraiser  | Community Hall A      | Prem           |
@@ -67,6 +69,8 @@ WHERE userID = (
 ```
 **Explanation:** This query selects details of events organized by the user with the username 'premvora' by using a subquery to obtain the `userID` of that user.
 
+**Output Example:**
+
 | eventName          | eventDescription                           | date       | time  |
 |--------------------|--------------------------------------------|------------|-------|
 | Charity Fundraiser | A charity event to raise funds for local shelters. | 2023-12-01 | 18:00 |
@@ -85,6 +89,8 @@ HAVING COUNT(e.eventID) > 1;
 ```
 **Explanation:** This query retrieves venue names and the count of events held at each venue, but only includes those venues that have hosted more than one event. This is achieved by grouping by venue and using the `HAVING` clause.
 
+**Output Example:**
+
 | venueName         | eventCount  |
 |-------------------|-------------|
 | Community Hall A  | 2           |
@@ -99,6 +105,8 @@ WHERE (date >= '2023-11-01' AND date <= '2023-12-31')
 AND (eventName LIKE '%Festival%' OR eventDescription LIKE '%network%');
 ```
 **Explanation:** This query selects all events that are happening between November and December 2023 and either have 'Festival' in their name or 'network' in their description.
+
+**Output Example:**
 
 | eventID  | userID  | eventName      | eventDescription                                | date       | time  | rsvpDeadline     |
 |----------|---------|----------------|-------------------------------------------------|------------|-------|---------------|
@@ -116,6 +124,8 @@ SELECT u.userID, u.name,
 FROM Users u;
 ```
 **Explanation:** This query retrieves user details and provides a role description based on the user type using a `CASE/WHEN` statement. It helps in understanding the permissions associated with each user role.
+
+**Output Example:**
 
 | userID  | name  | roleDescription       |
 |---------|-------|-----------------------|
