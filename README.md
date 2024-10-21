@@ -46,6 +46,15 @@ WHERE u.userType = 'Organizer';
 ```
 **Explanation:** This query retrieves the names of events, the corresponding venues, and the organizer names by joining the `Events`, `EventVenueMapping`, `Venue`, and `Users` tables.
 
+| eventName           | venueName             | organizerName  |
+|---------------------|-----------------------|----------------|
+| Charity Fundraiser  | Community Hall A      | Prem           |
+| Tech Meetup         | Community Hall B      | Goku           |
+| Art Exhibition      | Downtown Auditorium   | Prem           |
+| Music Festival      | Community Hall A      | Goku           |
+| Health Workshop     | Community Hall B      | Prem           |
+
+
 ### 2. Query with a Subquery
 ```sql
 SELECT eventName, eventDescription, date, time
@@ -58,6 +67,13 @@ WHERE userID = (
 ```
 **Explanation:** This query selects details of events organized by the user with the username 'premvora' by using a subquery to obtain the `userID` of that user.
 
+| eventName          | eventDescription                           | date       | time  |
+|--------------------|--------------------------------------------|------------|-------|
+| Charity Fundraiser | A charity event to raise funds for local shelters. | 2023-12-01 | 18:00 |
+| Art Exhibition     | Showcasing the work of local artists.      | 2023-12-10 | 11:00 |
+| Health Workshop    | A workshop on healthy living and well-being. | 2023-11-25 | 09:00 |
+
+
 ### 3. Query with GROUP BY and HAVING Clause
 ```sql
 SELECT v.venueName, COUNT(e.eventID) AS eventCount
@@ -69,6 +85,12 @@ HAVING COUNT(e.eventID) > 1;
 ```
 **Explanation:** This query retrieves venue names and the count of events held at each venue, but only includes those venues that have hosted more than one event. This is achieved by grouping by venue and using the `HAVING` clause.
 
+| venueName         | eventCount  |
+|-------------------|-------------|
+| Community Hall A  | 2           |
+| Community Hall B  | 2           |
+
+
 ### 4. Query with a Complex Search Criterion
 ```sql
 SELECT *
@@ -77,6 +99,12 @@ WHERE (date >= '2023-11-01' AND date <= '2023-12-31')
 AND (eventName LIKE '%Festival%' OR eventDescription LIKE '%network%');
 ```
 **Explanation:** This query selects all events that are happening between November and December 2023 and either have 'Festival' in their name or 'network' in their description.
+
+| eventID  | userID  | eventName      | eventDescription                                | date       | time  | rsvpDeadline     |
+|----------|---------|----------------|-------------------------------------------------|------------|-------|---------------|
+| 2        | 4       | Tech Meetup    | An event for tech enthusiasts to network and share ideas. | 2023-11-15 | 14:00 | 2023-11-10    |
+| 4        | 4       | Music Festival | A day-long festival featuring various local bands. | 2023-11-20 | 12:00 | 2023-11-17    |
+   
 
 ### 5. Query Using Advanced Query Mechanisms (SELECT CASE/WHEN)
 ```sql
@@ -88,6 +116,13 @@ SELECT u.userID, u.name,
 FROM Users u;
 ```
 **Explanation:** This query retrieves user details and provides a role description based on the user type using a `CASE/WHEN` statement. It helps in understanding the permissions associated with each user role.
+
+| userID  | name  | roleDescription       |
+|---------|-------|-----------------------|
+| 1       | Prem  | Can book venues       |
+| 2       | Adam  | Can RSVP to events    |
+| 3       | Jack  | Can RSVP to events    |
+| 4       | Goku  | Can book venues       |
 
 
 ## License
