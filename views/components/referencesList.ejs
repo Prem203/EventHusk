@@ -1,4 +1,8 @@
+<br />
 <h2>Venue Listings</h2>
+<% if (references.length === 0) { %>
+<div class="alert alert-primary">No venues found</div>
+<% } %>
 <div class="row g-3">
   <% for (let ref of references) { %>
 
@@ -9,8 +13,9 @@
         <div>Location: <%= ref.location %></div>
         <div>Capacity: <%= ref.capacity %></div>
         <div>Policies: <%= ref.policies %></div>
-        <div>Availability: <%= ref.availabilityStatus %></div>
-        <div>Person Responsible: <%= ref.personResponsible %></div>
+        <div>Status: <%= ref.availabilityStatus %></div>
+        <br />
+        <div><i>For further inquiries contact <%= ref.personResponsible %></i></div>
         <div>
           <a
             class="btn btn-outline-primary"

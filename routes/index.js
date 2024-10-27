@@ -12,7 +12,7 @@ router.get("/", async function (req, res, next) {
 router.get("/references", async (req, res, next) => {
   const query = req.query.q || "";
   const page = +req.query.page || 1;
-  const pageSize = +req.query.pageSize || 24;
+  const pageSize = +req.query.pageSize || 10;
   const msg = req.query.msg || null;
   try {
     let total = await myDb.getReferencesCount(query);
@@ -24,7 +24,7 @@ router.get("/references", async (req, res, next) => {
       query,
       msg,
       currentPage: page,
-      lastPage: Math.ceil(total / pageSize),
+      lastPage: Math.floor(total / pageSize),
     });
   } catch (err) {
     next(err);
