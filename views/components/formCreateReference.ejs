@@ -1,0 +1,39 @@
+<h2>Add a Venue</h2>
+<form action="/createReference" method="POST">
+  <div>
+    <label class="form-label">
+      Venue Name:
+      <input class="form-control" type="text" name="title" />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Location:
+      <input class="form-control" type="date" name="location" />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Capacity:
+      <input class="form-control" type="number" name="capacity" />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Policies:
+      <textarea class="form-control" name="policies"></textarea>
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Person of Contact:
+      <input class="form-control" type="text" name="person_responsible" />
+    </label>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Create</button>
+</form>
