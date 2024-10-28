@@ -57,8 +57,8 @@ export async function getReferencesCount(query) {
   }
 }
 
-export async function getReferenceByID(venueID) {
-  console.log("getReferenceByID", venueID);
+export async function getReferenceByID(reference_id) {
+  console.log("getReferenceByID", reference_id);
 
   const db = await open({
     filename: "./db/EventHusk.db",
@@ -67,11 +67,11 @@ export async function getReferenceByID(venueID) {
 
   const stmt = await db.prepare(`
     SELECT * FROM Venue
-    WHERE venueID = @venueID;
+    WHERE venueID = @reference_id;
   `);
 
   const params = {
-    "@venueID": venue_id,
+    "@reference_id": reference_id,
   };
 
   try {
@@ -93,16 +93,24 @@ export async function updatevenueByID(venueID, ref) {
   const stmt = await db.prepare(`
     UPDATE Venue
     SET
-      title = @title,
-      published_on = @published_on
+      venueName = @venueName,
+      location = @location,
+      capacity = @capacity,
+      policies = @policies
+      availabilityStatus = @availabilityStatus
+      personResponsible = @personResponsible
     WHERE
       venueID = @reference_id;
   `);
 
   const params = {
     "@reference_id": reference_id,
-    "@title": ref.title,
-    "@published_on": ref.published_on,
+    "@venueName": ref.venueName,
+    "@location": ref.location,
+    "@capacity": ref.capacity,
+    "@policies": ref.policies,
+    "@availabilityStatus": ref.availabilityStatus,
+    "@personResponsible": ref.personResponsible
   };
 
   try {
@@ -173,8 +181,8 @@ export async function getAuthorsByReferenceID(reference_id) {
 
   const stmt = await db.prepare(`
     SELECT * FROM Events
-    NATURAL JOIN Venues
-    WHERE eventID @reference_id;
+    NATURAL JOIN Venue
+    WHERE eventID = @reference_id;
   `);
 
   const params = {
@@ -236,6 +244,51 @@ export async function getAuthors(query, page, pageSize) {
     "@query": query + "%",
     "@pageSize": pageSize,
     "@offset": (page - 1) * pageSize,
+  };
+
+  try {
+    return await stmt.all(params);
+  } finally {
+    await stmt.finalize();
+    db.close();
+  }
+}
+
+export async function updateReferenceByID(query) {
+  console.log("updateReferenceByID query", query);
+
+  const db = await open({
+    filename: "./db/EventHusk.db",
+    driver: sqlite3.Database,
+  });
+
+  const stmt = await db.prepare(`
+    UPDATE Venue
+    SET
+      venueName = @venueName,
+      location = @location,
+      capacity = @capacity,
+      policies = @policies,
+      availabilityStatus = @availabilityStatus,
+      personResponsible = @personResponsible
+    WHERE
+      venueID = @venueID
+      LIMIT @pageSize
+      OFFSET @offset;
+  `);
+  
+
+  const params = {
+    "@query": query + "%",
+    "@pageSize": pageSize,
+    "@offset": (page - 1) * pageSize,
+    "@venueID": query.venueID,
+    "@venueName": query.venueName,
+    "@location": query.location,
+    "@capacity": query.capacity,
+    "@policies": query.policies,
+    "@availabilityStatus": query.availabilityStatus,
+    "@personResponsible": query.personResponsible
   };
 
   try {

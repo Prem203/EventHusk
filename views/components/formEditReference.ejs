@@ -1,49 +1,84 @@
-<h2>Reference</h2>
+<h2></h2>
 
 <form
-  action=" <%= '/references/' + ref.reference_id + '/edit' %>"
+  action=" <%= '/references/' + ref.venueID + '/edit' %>"
   method="POST"
 >
   <div>
     <label class="form-label">
-      Reference ID:
+      Venue Name:
       <input
         class="form-control"
         type="text"
         name="reference_id"
-        value="<%= ref.reference_id %>"
+        value="<%= ref.venueName %>"
         disabled
       />
     </label>
   </div>
   <div>
     <label class="form-label">
-      Title:
+      Location:
       <input
         class="form-control"
         type="text"
         name="title"
-        value="<%= ref.title %>"
+        value="<%= ref.location %>"
       />
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Published On:
+      Capacity:
       <input
         class="form-control"
         type="text"
         name="published_on"
-        value="<%= ref.published_on %>"
+        value="<%= ref.capacity %>"
       />
     </label>
   </div>
 
+  <div>
+    <label class="form-label">
+      Policies:
+      <input
+        class="form-control"
+        type="text"
+        name="published_on"
+        value="<%= ref.policies %>"
+      />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Availability Status:
+      <input
+        class="form-control"
+        type="text"
+        name="published_on"
+        value="<%= ref.availabilityStatus %>"
+      />    
+  </div>
+
+  <div>
+    <label class="form-label">
+      Person Responsible:
+      <input
+        class="form-control"
+        type="text"
+        name="published_on"
+        value="<%= ref.personResponsible %>"
+      />  
+  </div>
+
+
   <button type="submit" class="btn btn-primary">Edit</button>
   <a
     class="btn btn-danger"
-    href="<%= '/references/' + ref.reference_id + '/delete' %>"
+    href="<%= '/references/' + ref.venueID + '/delete' %>"
     >Delete</a
   >
 </form>

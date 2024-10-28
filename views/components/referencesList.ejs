@@ -10,11 +10,32 @@
     <div class="card p-1">
       <h5 class="card-title"><%= ref.venueName || 'Unknown Venue' %></h5>
       <div class="card-text">
-        <div>Location: <%= ref.location || 'Location not specified' %></div>
-        <div>Capacity: <%= ref.capacity || 'Capacity not specified' %></div>
-        <div>Policies: <%= ref.policies || 'Policies not available' %></div>
-        <div>Status: <%= ref.availabilityStatus || 'Status unknown' %></div>
+        <% if (ref.location) { %>
+          <div>Location: <%= ref.location %></div>
+        <% } else { %>
+          <div>Location not specified</div>
+        <% } %>
+        
+        <% if (ref.capacity) { %>
+          <div>Capacity: <%= ref.capacity %></div>
+        <% } else { %>
+          <div>Capacity not specified</div>
+        <% } %>
+        
+        <% if (ref.policies) { %>
+          <div>Policies: <%= ref.policies %></div>
+        <% } else { %>
+          <div>Policies not available</div>
+        <% } %>
+        
+        <% if (ref.availabilityStatus) { %>
+          <div>Status: <%= ref.availabilityStatus %></div>
+        <% } else { %>
+          <div>Status unknown</div>
+        <% } %>
+
         <br />
+        
         <% if (ref.personResponsible) { %>
           <div><i>For further inquiries contact <%= ref.personResponsible %></i></div>
         <% } else { %>
