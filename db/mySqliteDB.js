@@ -73,7 +73,7 @@ export async function getReferenceByID(venueID) {
   `);
 
   const params = {
-    "@reference_id": venue_id,
+    "@venueID": venue_id,
   };
 
   try {
@@ -119,7 +119,7 @@ export async function deleteReferenceByID(reference_id) {
   console.log("deleteReferenceByID", reference_id);
 
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
@@ -143,7 +143,7 @@ export async function deleteReferenceByID(reference_id) {
 
 export async function insertReference(ref) {
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
@@ -166,14 +166,14 @@ export async function getAuthorsByReferenceID(reference_id) {
   console.log("getAuthorsByReferenceID", reference_id);
 
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Reference_Author
-    NATURAL JOIN Author
-    WHERE reference_id = @reference_id;
+    SELECT * FROM Events
+    NATURAL JOIN Venues
+    WHERE eventID @reference_id;
   `);
 
   const params = {
@@ -192,7 +192,7 @@ export async function addAuthorIDToReferenceID(reference_id, author_id) {
   console.log("addAuthorIDToReferenceID", reference_id, author_id);
 
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
@@ -219,16 +219,14 @@ export async function getAuthors(query, page, pageSize) {
   console.log("getAuthors query", query);
 
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Author
-    WHERE 
-      first_name LIKE @query OR 
-      last_name LIKE @query
-    ORDER BY last_name DESC
+    SELECT * FROM Events
+    WHERE eventName LIKE @query
+    ORDER BY date DESC
     LIMIT @pageSize
     OFFSET @offset;
   `);
@@ -251,16 +249,16 @@ export async function getAuthorsCount(query) {
   console.log("getAuthorsCount query", query);
 
   const db = await open({
-    filename: "./db/database.db",
+    filename: "./db/EventHusk.db",
     driver: sqlite3.Database,
   });
 
   const stmt = await db.prepare(`
     SELECT COUNT(*) AS count
-    FROM Author
+    FROM Events
     WHERE 
-      first_name LIKE @query OR 
-      last_name LIKE @query;
+      eventID LIKE @query OR 
+      userID LIKE @query;
   `);
 
   const params = {

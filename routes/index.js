@@ -25,6 +25,7 @@ router.get("/references", async (req, res, next) => {
       msg,
       currentPage: page,
       lastPage: Math.floor(total / pageSize),
+      baseUrl: '/references',
     });
   } catch (err) {
     next(err);
@@ -131,15 +132,16 @@ router.get("/authors", async (req, res, next) => {
   const msg = req.query.msg || null;
   try {
     let total = await myDb.getAuthorsCount(query);
-    let authors = await myDb.getAuthors(query, page, pageSize);
+    let events = await myDb.getAuthors(query, page, pageSize);
 
 
     res.render("./pages/index_authors", {
-      authors,
+      events,
       query,
       msg,
       currentPage: page,
       lastPage: Math.ceil(total / pageSize),
+      baseUrl: '/authors'
     });
   } catch (err) {
     next(err);
