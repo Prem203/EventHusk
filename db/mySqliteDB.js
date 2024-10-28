@@ -9,8 +9,6 @@ export async function getReferences(query, page, pageSize) {
     driver: sqlite3.Database,
   });
 
-  console.log("Fatttaaaa");
-
   const stmt = await db.prepare(`
     SELECT * FROM Venue
     WHERE venueName LIKE @query
@@ -124,9 +122,9 @@ export async function deleteReferenceByID(reference_id) {
   });
 
   const stmt = await db.prepare(`
-    DELETE FROM Reference
+    DELETE FROM Venue
     WHERE
-      reference_id = @reference_id;
+      venueID = @reference_id;
   `);
 
   const params = {
@@ -148,13 +146,16 @@ export async function insertReference(ref) {
   });
 
   const stmt = await db.prepare(`INSERT INTO
-    Reference(title, published_on)
-    VALUES (@title, @published_on);`);
+    Venue(venueName, location, capacity, policies, availabilityStatus, personResponsible)
+    VALUES (@venueName, @location, @capacity, @policies, 'Available', @personResponsible);`);
 
   try {
     return await stmt.run({
-      "@title": ref.title,
-      "@published_on": ref.published_on,
+      "@venueName": ref.venueName,
+      "@location": ref.location,
+      "@capacity": ref.capacity,
+      "@policies": ref.policies,
+      "@personResponsible": ref.personResponsible
     });
   } finally {
     await stmt.finalize();
