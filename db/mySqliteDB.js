@@ -77,6 +77,7 @@ export async function getReferenceByID(reference_id) {
   try {
     let ref = await stmt.get(params);
 
+    ref.venueName = ref.venueName || "Name not specified";
     ref.location = ref.location || "Location not specified";
     ref.capacity = ref.capacity || "Capacity not specified";
     ref.policies = ref.policies || "Policies not available";
@@ -242,11 +243,14 @@ export async function getAuthors(query, page, pageSize) {
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Events
+    SELECT Events.*, Venue.venueName, Venue.location
+    FROM Events
+    INNER JOIN EventVenueMapping ON Events.eventID = EventVenueMapping.eventID
+    INNER JOIN Venue ON EventVenueMapping.venueID = Venue.venueID
     WHERE eventName LIKE @query
     ORDER BY date DESC
     LIMIT @pageSize
-    OFFSET @offset;
+    OFFSET @offset;;
   `);
 
   const params = {
