@@ -1,61 +1,49 @@
 <br />
-<h2>Venue Listings</h2>
+<h2 class="mb-4 text-primary">Event Listings</h2>
 <% if (references.length === 0) { %>
-<div class="alert alert-primary">No venues found</div>
+  <div class="alert alert-primary">No Events found</div>
 <% } %>
+
 <div class="row g-3">
   <% for (let ref of references) { %>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="card h-100 p-2 shadow-sm">
+        <h5 class="card-title text-truncate"><%= ref.eventName || 'Unknown Event' %></h5>
+        <div class="card-body">
+          <p class="card-text">
+            <% if (ref.eventDescription) { %>
+              <div class="text-wrap">Description: <%= ref.eventDescription %></div>
+            <% } else { %>
+              <div>Description not specified</div>
+            <% } %>
+          </p>
 
-  <div class="col-4">
-    <div class="card p-1">
-      <h5 class="card-title"><%= ref.venueName || 'Unknown Venue' %></h5>
-      <div class="card-text">
-        <% if (ref.location) { %>
-          <div>Location: <%= ref.location %></div>
-        <% } else { %>
-          <div>Location not specified</div>
-        <% } %>
-        
-        <% if (ref.capacity) { %>
-          <div>Capacity: <%= ref.capacity %></div>
-        <% } else { %>
-          <div>Capacity not specified</div>
-        <% } %>
-        
-        <% if (ref.policies) { %>
-          <div>Policies: <%= ref.policies %></div>
-        <% } else { %>
-          <div>Policies not available</div>
-        <% } %>
-        
-        <% if (ref.availabilityStatus) { %>
-          <div>Status: <%= ref.availabilityStatus %></div>
-        <% } else { %>
-          <div>Status unknown</div>
-        <% } %>
+          <% if (ref.date) { %>
+            <div>Date: <%= ref.date %></div>
+          <% } else { %>
+            <div>Date not specified</div>
+          <% } %>
 
-        <br />
-        
-        <% if (ref.personResponsible) { %>
-          <div><i>For further inquiries contact <%= ref.personResponsible %></i></div>
-        <% } else { %>
-          <div><i>Point of Contact Not Assigned</i></div>
-        <% } %>
-        <div>
-          <a
-            class="btn btn-outline-primary"
-            href="<%= '/references/' + ref.venueID + '/edit' %>"
-            >Edit</a
-          >
-          <a
-            class="btn btn-outline-danger"
-            href="<%= '/references/' + ref.venueID + '/delete' %>"
-            >Delete</a
-          >
+          <% if (ref.time) { %>
+            <div>Time: <%= ref.time %></div>
+          <% } else { %>
+            <div>Time not specified</div>
+          <% } %>
+
+          <% if (ref.rsvpDeadline) { %>
+            <div>RSVP Deadline: <%= ref.rsvpDeadline %></div>
+          <% } else { %>
+            <div>RSVP Deadline not specified</div>
+          <% } %>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+          <a class="btn btn-outline-primary btn-sm" href="<%= '/references/' + ref.eventID + '/edit' %>">Edit</a>
+          <a class="btn btn-outline-danger btn-sm" href="<%= '/references/' + ref.eventID + '/delete' %>">Delete</a>
         </div>
       </div>
     </div>
-  </div>
+  <% } %>
 
-  <% } %> <%- include("./pagination.ejs", { baseUrl: '/references', currentPage, lastPage }) %>
+  <%- include("./pagination.ejs", { baseUrl: '/references', currentPage, lastPage }) %>
 </div>

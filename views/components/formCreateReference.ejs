@@ -1,37 +1,44 @@
-<h2>Add a Venue</h2>
+<h2>Add an Event</h2>
 <form action="/createReference" method="POST">
   <div>
     <label class="form-label">
-      Venue Name:
-      <input class="form-control" type="text" name="venueName" />
+      Event Name:
+      <input class="form-control" type="text" name="eventName" placeholder="Enter event name" required/></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Location:
-      <input class="form-control" type="text" name="location" />
+      Description:
+      <input class="form-control" type="text" name="eventDescription" /></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Capacity:
-      <input class="form-control" type="number" name="capacity" />
+      Date:
+      <input class="form-control" type="date" name="date" required/></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Policies:
-      <textarea class="form-control" name="policies"></textarea>
+      Time:
+      <input class="form-control" type="time" name="time" required></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Person of Contact:
-      <input class="form-control" type="text" name="personResponsible" />
+      RSVP Deadline:
+      <input class="form-control" type="datetime-local" name="rsvpDeadline"></input>
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      UserID:
+      <input class="form-control" type="text" name="userID" /></input>
     </label>
   </div>
 

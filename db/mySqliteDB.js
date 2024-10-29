@@ -10,9 +10,9 @@ export async function getReferences(query, page, pageSize) {
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Venue
-    WHERE venueName LIKE @query
-    ORDER BY capacity DESC
+    SELECT * FROM Events
+    WHERE eventName LIKE @query
+    ORDER BY rsvpDeadline DESC
     LIMIT @pageSize
     OFFSET @offset;
   `);
@@ -32,7 +32,7 @@ export async function getReferences(query, page, pageSize) {
 }
 
 export async function getReferencesCount(query) {
-  console.log("getvenues", query);
+  console.log("getevents", query);
 
   const db = await open({
     filename: "./db/EventHusk.db",
@@ -41,8 +41,8 @@ export async function getReferencesCount(query) {
 
   const stmt = await db.prepare(`
     SELECT COUNT(*) AS count
-    FROM Venue
-    WHERE venueName LIKE @query;
+    FROM Events
+    WHERE eventName LIKE @query;
   `);
 
   const params = {
@@ -66,8 +66,8 @@ export async function getReferenceByID(reference_id) {
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Venue
-    WHERE venueID = @reference_id;
+    SELECT * FROM Events
+    WHERE eventID = @reference_id;
   `);
 
   const params = {
@@ -77,54 +77,13 @@ export async function getReferenceByID(reference_id) {
   try {
     let ref = await stmt.get(params);
 
-    ref.venueName = ref.venueName || "Name not specified";
-    ref.location = ref.location || "Location not specified";
-    ref.capacity = ref.capacity || "Capacity not specified";
-    ref.policies = ref.policies || "Policies not available";
-    ref.availabilityStatus = ref.availabilityStatus || "Status unknown";
-    ref.personResponsible = ref.personResponsible || "Not Assigned";
-
+    ref.eventName = ref.eventName || "Name not specified";
+    ref.eventDescription = ref.eventDescription || "Description not specified";
+    ref.date = ref.date || "Date not specified";
+    ref.time = ref.policies || "Time not specified";
+    ref.rsvpDeadline = ref.rsvpDeadline || "RSVP Deadline not specified";
     return ref;
 
-  } finally {
-    await stmt.finalize();
-    db.close();
-  }
-}
-
-export async function updatevenueByID(venueID, ref) {
-  console.log("updatevenueByID", venueID, ref);
-
-  const db = await open({
-    filename: "./db/EventHusk.db",
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    UPDATE Venue
-    SET
-      venueName = @venueName,
-      location = @location,
-      capacity = @capacity,
-      policies = @policies
-      availabilityStatus = @availabilityStatus
-      personResponsible = @personResponsible
-    WHERE
-      venueID = @reference_id;
-  `);
-
-  const params = {
-    "@reference_id": reference_id,
-    "@venueName": ref.venueName,
-    "@location": ref.location,
-    "@capacity": ref.capacity,
-    "@policies": ref.policies,
-    "@availabilityStatus": ref.availabilityStatus,
-    "@personResponsible": ref.personResponsible
-  };
-
-  try {
-    return await stmt.run(params);
   } finally {
     await stmt.finalize();
     db.close();
@@ -140,9 +99,9 @@ export async function deleteReferenceByID(reference_id) {
   });
 
   const stmt = await db.prepare(`
-    DELETE FROM Venue
+    DELETE FROM Events
     WHERE
-      venueID = @reference_id;
+      eventID = @reference_id;
   `);
 
   const params = {
@@ -163,17 +122,22 @@ export async function insertReference(ref) {
     driver: sqlite3.Database,
   });
 
+  const formattedDate = ref.date; // Assuming date is already in 'YYYY-MM-DD' format
+  const formattedTime = ref.time; // Assuming time is already in 'HH:MM' format
+  const formattedRsvpDeadline = ref.rsvpDeadline ? new Date(ref.rsvpDeadline).toISOString() : null; 
+
   const stmt = await db.prepare(`INSERT INTO
-    Venue(venueName, location, capacity, policies, availabilityStatus, personResponsible)
-    VALUES (@venueName, @location, @capacity, @policies, 'Available', @personResponsible);`);
+    Events(eventName, eventDescription, date, time, rsvpDeadline, userID)
+    VALUES (@eventName, @eventDescription, @date, @time, @rsvpDeadline, @userID);`);
 
   try {
     return await stmt.run({
-      "@venueName": ref.venueName,
-      "@location": ref.location,
-      "@capacity": ref.capacity,
-      "@policies": ref.policies,
-      "@personResponsible": ref.personResponsible
+      "@eventName": ref.eventName,
+      "@eventDescription": ref.eventDescription,
+      "@date": formattedDate,
+      "@time": formattedTime,
+      "@rsvpDeadline": formattedRsvpDeadline,
+      "@userID": ref.userID,
     });
   } finally {
     await stmt.finalize();
@@ -190,9 +154,9 @@ export async function getAuthorsByReferenceID(reference_id) {
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Events
+    SELECT * FROM Venue
     NATURAL JOIN EventVenueMapping
-    WHERE venueID = @reference_id;
+    WHERE eventID = @reference_id;
   `);
 
   const params = {
@@ -218,7 +182,7 @@ export async function addAuthorIDToReferenceID(reference_id, author_id) {
   const stmt = await db.prepare(`
     INSERT INTO
     EventVenueMapping(venueID, eventID)
-    VALUES (@reference_id, @author_id);
+    VALUES (@author_id, @reference_id);
   `);
 
   const params = {
@@ -243,12 +207,10 @@ export async function getAuthors(query, page, pageSize) {
   });
 
   const stmt = await db.prepare(`
-    SELECT Events.*, Venue.venueName, Venue.location
-    FROM Events
-    INNER JOIN EventVenueMapping ON Events.eventID = EventVenueMapping.eventID
-    INNER JOIN Venue ON EventVenueMapping.venueID = Venue.venueID
-    WHERE eventName LIKE @query
-    ORDER BY date DESC
+    SELECT *
+    FROM Venue
+    WHERE venueName LIKE @query
+    ORDER BY capacity DESC
     LIMIT @pageSize
     OFFSET @offset;;
   `);
@@ -277,27 +239,25 @@ export async function updateReferenceByID(reference_id, ref) {
   });
 
   const stmt = await db.prepare(`
-    UPDATE Venue
+    UPDATE Events
     SET
-      venueName = @venueName,
-      location = @location,
-      capacity = @capacity,
-      policies = @policies,
-      availabilityStatus = @availabilityStatus,
-      personResponsible = @personResponsible
+      eventName = @eventName,
+      eventDescription = @eventDescription,
+      date = @date,
+      time = @time,
+      rsvpDeadline = @rsvpDeadline
     WHERE
-      venueID = @reference_id
+      eventID = @reference_id;
   `);
   
 
   const params = {
     "@reference_id": reference_id,
-    "@venueName": ref.venueName || "Name not specified",
-    "@location": ref.location || "Location not specified",
-    "@capacity": ref.capacity || "Capacity not specified",
-    "@policies": ref.policies || "Policies not available",
-    "@availabilityStatus": ref.availabilityStatus || "Status unknown",
-    "@personResponsible": ref.personResponsible || "Not Assigned",
+    "@eventName": ref.eventName || "Name not specified",
+    "@eventDescription": ref.eventDescription || "Description not specified",
+    "@date": ref.date || "Date not specified",
+    "@time": ref.time || "Time not specified",
+    "@rsvpDeadline": ref.rsvpDeadline || "RSVP Deadline not specified",
   };
 
   try {
@@ -318,10 +278,9 @@ export async function getAuthorsCount(query) {
 
   const stmt = await db.prepare(`
     SELECT COUNT(*) AS count
-    FROM Events
+    FROM Venue
     WHERE 
-      eventID LIKE @query OR 
-      userID LIKE @query;
+      venueID LIKE @query;
   `);
 
   const params = {

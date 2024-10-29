@@ -1,85 +1,61 @@
 <h2></h2>
 
 <form
-  action=" <%= '/references/' + ref.venueID + '/edit' %>"
+  action=" <%= '/references/' + ref.eventID + '/edit' %>"
   method="POST"
 >
   <div>
     <label class="form-label">
-      Venue Name:
+      Event Name:
       <input
         class="form-control"
         type="text"
-        name="venueName"
-        value="<%= ref.venueName %>"
+        name="eventName"
+        value="<%= ref.eventName %>"
       />
     </label>
   </div>
   <div>
     <label class="form-label">
-      Location:
+      Description:
       <input
         class="form-control"
         type="text"
-        name="location"
-        value="<%= ref.location %>"
-      />
-    </label>
-  </div>
-
-  <div>
-    <label class="form-label">
-      Capacity:
-      <input
-        class="form-control"
-        type="text"
-        name="capacity"
-        value="<%= ref.capacity %>"
+        name="eventDescription"
+        value="<%= ref.eventDescription %>"
       />
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Policies:
+      Date:
       <input
         class="form-control"
-        type="text"
-        name="policies"
-        value="<%= ref.policies %>"
+        type="date"
+        name="date"
+        value="<%= ref.date %>"
       />
     </label>
   </div>
 
   <div>
     <label class="form-label">
-      Availability Status:
+      Time:
       <input
         class="form-control"
         type="text"
-        name="availabilityStatus"
-        value="<%= ref.availabilityStatus %>"
-      />    
-    </label>  
-  </div>
-
-  <div>
-    <label class="form-label">
-      Person Responsible:
-      <input
-        class="form-control"
-        type="text"
-        name="personResponsible"
-        value="<%= ref.personResponsible %>"
+        name="time"
+        value="<%= ref.time %>"
       />
-        
+    </label>
   </div>
 
 
   <button type="submit" class="btn btn-primary">Edit</button>
   <a
     class="btn btn-danger"
-    href="<%= '/references/' + ref.venueID + '/delete' %>"
+    href="<%= '/references/' + ref.eventID + '/delete' %>"
     >Delete</a
   >
 </form>

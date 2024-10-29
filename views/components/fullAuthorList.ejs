@@ -1,25 +1,26 @@
-<h2>Events</h2>
+<h2>Venues</h2>
 
-<% if (events.length > 0) { %>
+<% if (venues.length > 0) { %>
   <div class="row g-3">
-    <% for (let event of events) { %>
+    <% for (let venue of venues) { %>
     <div class="col-4">
       <div class="card p-1">
-        <h5 class="card-title"><%= event.eventName %></h5>
+        <h5 class="card-title"><%= venue.venueName %></h5>
         <div class="card-text">
-          <div>Description: <%= event.eventDescription %></div>
-          <div>Date: <%= event.date %> </div>
-          <div>Time: <%= event.time %></div>
-          <div>Venue: <%= event.venueName %> - <%= event.location %></div>
+          <div>Location: <%= venue.location %></div>
+          <div>Capacity: <%= venue.capacity %> </div>
+          <div>Policies: <%= venue.policies %></div>
+          <div>Availability Status: <%= venue.availabilityStatus %></div>
+          <div>Person Responsible: <%= venue.personResponsible %></div>
           <div>
             <a
               class="btn btn-outline-primary"
-              href="<%= '/authors/' + event.eventID + '/edit' %>"
+              href="<%= '/authors/' + venue.venueID + '/edit' %>"
               >Edit</a
             >
             <a
               class="btn btn-outline-danger"
-              href="<%= '/authors/' + event.eventID + '/delete' %>"
+              href="<%= '/authors/' + venue.venueID + '/delete' %>"
               >Delete</a
             >
           </div>
@@ -29,7 +30,7 @@
     <% } %>
   </div>
 <% } else { %>
-  <div class="alert alert-warning">No events found for this page.</div>
+  <div class="alert alert-warning">No Venues found for this page.</div>
 <% } %>
 
 <%- include("./pagination.ejs", { baseUrl: '/authors', currentPage, lastPage }) %>

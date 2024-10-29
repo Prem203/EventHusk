@@ -4,6 +4,10 @@ body {
   padding-top: 4.5rem;
 }
 
+.card {
+  height: 100%;
+  transition: box-shadow 0.3s ease-in-out;
+}
 
 .card a {
   opacity:  0;

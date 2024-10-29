@@ -115,6 +115,7 @@ router.get("/references/:reference_id/delete", async (req, res, next) => {
 
 router.post("/createReference", async (req, res, next) => {
   const ref = req.body;
+  console.log("Received req object:", req.body);
 
   try {
     const insertRes = await myDb.insertReference(ref);
@@ -136,11 +137,11 @@ router.get("/authors", async (req, res, next) => {
   const msg = req.query.msg || null;
   try {
     let total = await myDb.getAuthorsCount(query);
-    let events = await myDb.getAuthors(query, page, pageSize);
+    let venues = await myDb.getAuthors(query, page, pageSize);
 
 
     res.render("./pages/index_authors", {
-      events,
+      venues,
       query,
       msg,
       currentPage: page,
