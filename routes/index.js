@@ -59,9 +59,12 @@ router.post("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
   const ref = req.body;
 
+  console.log("Received reference_id:", reference_id);
+  console.log("Received ref object:", ref);
+
   try {
     let updateResult = await myDb.updateReferenceByID(reference_id, ref);
-    console.log("update", updateResult);
+    console.log("update", updateResult.changes);
 
     if (updateResult && updateResult.changes === 1) {
       res.redirect("/references/?msg=Updated");
@@ -69,6 +72,7 @@ router.post("/references/:reference_id/edit", async (req, res, next) => {
       res.redirect("/references/?msg=Error Updating");
     }
   } catch (err) {
+    console.error("Error during update:", err);
     next(err);
   }
 });

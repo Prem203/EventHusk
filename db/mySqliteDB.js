@@ -75,7 +75,16 @@ export async function getReferenceByID(reference_id) {
   };
 
   try {
-    return await stmt.get(params);
+    let ref = await stmt.get(params);
+
+    ref.location = ref.location || "Location not specified";
+    ref.capacity = ref.capacity || "Capacity not specified";
+    ref.policies = ref.policies || "Policies not available";
+    ref.availabilityStatus = ref.availabilityStatus || "Status unknown";
+    ref.personResponsible = ref.personResponsible || "Not Assigned";
+
+    return ref;
+
   } finally {
     await stmt.finalize();
     db.close();
@@ -181,8 +190,8 @@ export async function getAuthorsByReferenceID(reference_id) {
 
   const stmt = await db.prepare(`
     SELECT * FROM Events
-    NATURAL JOIN Venue
-    WHERE eventID = @reference_id;
+    NATURAL JOIN EventVenueMapping
+    WHERE venueID = @reference_id;
   `);
 
   const params = {
@@ -207,7 +216,7 @@ export async function addAuthorIDToReferenceID(reference_id, author_id) {
 
   const stmt = await db.prepare(`
     INSERT INTO
-    Reference_Author(reference_id, author_id)
+    EventVenueMapping(venueID, eventID)
     VALUES (@reference_id, @author_id);
   `);
 
@@ -254,8 +263,9 @@ export async function getAuthors(query, page, pageSize) {
   }
 }
 
-export async function updateReferenceByID(query) {
-  console.log("updateReferenceByID query", query);
+export async function updateReferenceByID(reference_id, ref) {
+  console.log("Inside update ref", ref);
+  console.log("Inside update reference_id", reference_id);
 
   const db = await open({
     filename: "./db/EventHusk.db",
@@ -272,27 +282,22 @@ export async function updateReferenceByID(query) {
       availabilityStatus = @availabilityStatus,
       personResponsible = @personResponsible
     WHERE
-      venueID = @venueID
-      LIMIT @pageSize
-      OFFSET @offset;
+      venueID = @reference_id
   `);
   
 
   const params = {
-    "@query": query + "%",
-    "@pageSize": pageSize,
-    "@offset": (page - 1) * pageSize,
-    "@venueID": query.venueID,
-    "@venueName": query.venueName,
-    "@location": query.location,
-    "@capacity": query.capacity,
-    "@policies": query.policies,
-    "@availabilityStatus": query.availabilityStatus,
-    "@personResponsible": query.personResponsible
+    "@reference_id": reference_id,
+    "@venueName": ref.venueName || "Name not specified",
+    "@location": ref.location || "Location not specified",
+    "@capacity": ref.capacity || "Capacity not specified",
+    "@policies": ref.policies || "Policies not available",
+    "@availabilityStatus": ref.availabilityStatus || "Status unknown",
+    "@personResponsible": ref.personResponsible || "Not Assigned",
   };
 
   try {
-    return await stmt.all(params);
+    return await stmt.run(params);
   } finally {
     await stmt.finalize();
     db.close();
