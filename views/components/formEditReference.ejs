@@ -44,13 +44,49 @@
       Time:
       <input
         class="form-control"
-        type="text"
+        type="time"
         name="time"
         value="<%= ref.time %>"
       />
     </label>
   </div>
 
+  <div>
+    <label class="form-label">
+      RSVP Deadline:
+      <input
+        class="form-control"
+        type="datetime-local"
+        name="rsvpDeadline"
+        value="<%= ref.rsvpDeadline %>"
+      />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      UserID:
+      <input
+        class="form-control"
+        type="text"
+        name="userID"
+        value="<%= ref.userID %>"
+      />
+    </label>
+  </div>
+
+  <div>
+    <label class="form-label">
+      Venue:
+      <select class="form-control" name="venueID" required>
+        <option value="" disabled>Select a venue</option>
+        <% venues.forEach(function(venue) { %>
+          <option value="<%= venue.venueID %>" <%= venue.venueID == ref.venueID ? 'selected' : '' %>><%= venue.venueName %></option>
+        <% }); %>
+      </select>
+    </label>
+  </div>
+  
 
   <button type="submit" class="btn btn-primary">Edit</button>
   <a

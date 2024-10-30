@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { format } from 'date-fns';
 
 export async function getReferences(query, page, pageSize) {
   console.log("getReferences", query);
@@ -10,7 +11,10 @@ export async function getReferences(query, page, pageSize) {
   });
 
   const stmt = await db.prepare(`
-    SELECT * FROM Events
+    SELECT Events.*, Venue.venueName
+    FROM Events
+    LEFT JOIN EventVenueMapping ON Events.eventID = EventVenueMapping.eventID
+    LEFT JOIN Venue ON EventVenueMapping.venueID = Venue.venueID
     WHERE eventName LIKE @query
     ORDER BY rsvpDeadline DESC
     LIMIT @pageSize
@@ -124,7 +128,7 @@ export async function insertReference(ref) {
 
   const formattedDate = ref.date; // Assuming date is already in 'YYYY-MM-DD' format
   const formattedTime = ref.time; // Assuming time is already in 'HH:MM' format
-  const formattedRsvpDeadline = ref.rsvpDeadline ? new Date(ref.rsvpDeadline).toISOString() : null; 
+  const formattedRsvpDeadline = ref.rsvpDeadline ? format(new Date(ref.rsvpDeadline), 'yyyy-MM-dd HH:mm') : null; 
 
   const stmt = await db.prepare(`INSERT INTO
     Events(eventName, eventDescription, date, time, rsvpDeadline, userID)
@@ -171,8 +175,8 @@ export async function getAuthorsByReferenceID(reference_id) {
   }
 }
 
-export async function addAuthorIDToReferenceID(reference_id, author_id) {
-  console.log("addAuthorIDToReferenceID", reference_id, author_id);
+export async function addAuthorIDToReferenceID(venueID, eventID) {
+  console.log("addAuthorIDToReferenceID", venueID, eventID);
 
   const db = await open({
     filename: "./db/EventHusk.db",
@@ -182,12 +186,12 @@ export async function addAuthorIDToReferenceID(reference_id, author_id) {
   const stmt = await db.prepare(`
     INSERT INTO
     EventVenueMapping(venueID, eventID)
-    VALUES (@author_id, @reference_id);
+    VALUES (@venueID, @eventID);
   `);
 
   const params = {
-    "@reference_id": reference_id,
-    "@author_id": author_id,
+    "@eventID": eventID,
+    "@venueID": venueID,
   };
 
   try {
@@ -294,3 +298,126 @@ export async function getAuthorsCount(query) {
     db.close();
   }
 }
+
+export async function updateEventVenueMapping(eventID, venueID) {
+  console.log("Updating EventVenueMapping for eventID:", eventID, "venueID:", venueID);
+
+  const db = await open({
+    filename: "./db/EventHusk.db",
+    driver: sqlite3.Database,
+  });
+
+  // Check if a mapping already exists for this event
+  const existingMapping = await db.get(`
+    SELECT * FROM EventVenueMapping WHERE eventID = @eventID
+  `, {
+    "@eventID": eventID,
+  });
+
+  let stmt;
+
+  if (existingMapping) {
+    // Update existing mapping
+    stmt = await db.prepare(`
+      UPDATE EventVenueMapping
+      SET venueID = @venueID
+      WHERE eventID = @eventID
+    `);
+  } else {
+    // Insert new mapping
+    stmt = await db.prepare(`
+      INSERT INTO EventVenueMapping (eventID, venueID)
+      VALUES (@eventID, @venueID)
+    `);
+  }
+
+  const params = {
+    "@eventID": eventID,
+    "@venueID": venueID,
+  };
+
+  try {
+    return await stmt.run(params);
+  } finally {
+    await stmt.finalize();
+    db.close();
+  }
+}
+
+export async function getEventsByVenueID(venueID) {
+  console.log("Getting events for venueID:", venueID);
+
+  const db = await open({
+    filename: "./db/EventHusk.db",
+    driver: sqlite3.Database,
+  });
+
+  const stmt = await db.prepare(`
+    SELECT Events.*
+    FROM Events
+    INNER JOIN EventVenueMapping ON Events.eventID = EventVenueMapping.eventID
+    WHERE EventVenueMapping.venueID = @venueID;
+  `);
+
+  const params = {
+    "@venueID": venueID,
+  };
+
+  try {
+    return await stmt.all(params);
+  } finally {
+    await stmt.finalize();
+    db.close();
+  }
+}
+
+export async function deleteVenueByID(venueID) {
+  console.log("deleteVenueByID", venueID);
+
+  const db = await open({
+    filename: "./db/EventHusk.db",
+    driver: sqlite3.Database,
+  });
+
+  try {
+    // Step 1: Delete events associated with the venue
+    const deleteEventsStmt = await db.prepare(`
+      DELETE FROM Events
+      WHERE eventID IN (
+        SELECT eventID
+        FROM EventVenueMapping
+        WHERE venueID = @venueID
+      );
+    `);
+    await deleteEventsStmt.run({ "@venueID": venueID });
+    await deleteEventsStmt.finalize();
+    console.log("Deleted Events associated with venueID:", venueID);
+
+    // Step 2: Delete entries from EventVenueMapping
+    const deleteMappingStmt = await db.prepare(`
+      DELETE FROM EventVenueMapping
+      WHERE venueID = @venueID;
+    `);
+    await deleteMappingStmt.run({ "@venueID": venueID });
+    await deleteMappingStmt.finalize();
+    console.log("Deleted EventVenueMapping entries for venueID:", venueID);
+
+    // Step 3: Delete the venue itself
+    const deleteVenueStmt = await db.prepare(`
+      DELETE FROM Venue
+      WHERE venueID = @venueID;
+    `);
+    const result = await deleteVenueStmt.run({ "@venueID": venueID });
+    await deleteVenueStmt.finalize();
+    console.log("Deleted venue with venueID:", venueID);
+
+    return result;
+  } catch (err) {
+    console.error("Error deleting venue:", err);
+    throw err;
+  } finally {
+    db.close();
+  }
+}
+
+

@@ -35,6 +35,13 @@
           <% } else { %>
             <div>RSVP Deadline not specified</div>
           <% } %>
+
+          <% if (ref.venueName) { %>
+            <div><b>Venue:</b> <%= ref.venueName %></div>
+          <% } else { %>
+            <div>Venue: Not assigned</div>
+          <% } %>
+
         </div>
 
         <div class="card-footer d-flex justify-content-between">
@@ -44,6 +51,7 @@
       </div>
     </div>
   <% } %>
+
 
   <%- include("./pagination.ejs", { baseUrl: '/references', currentPage, lastPage }) %>
 </div>

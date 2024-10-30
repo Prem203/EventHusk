@@ -42,5 +42,17 @@
     </label>
   </div>
 
+  <div>
+    <label class="form-label">
+      Venue:
+      <select class="form-control" name="venueID" required>
+        <option value="" disabled selected>Select a venue</option>
+        <% venues.forEach(function(venue) { %>
+          <option value="<%= venue.venueID %>"><%= venue.venueName %></option>
+        <% }); %>
+      </select>
+    </label>
+  </div>
+  
   <button class="btn btn-primary" type="submit">Create</button>
 </form>

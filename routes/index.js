@@ -17,7 +17,7 @@ router.get("/references", async (req, res, next) => {
   try {
     let total = await myDb.getReferencesCount(query);
     let references = await myDb.getReferences(query, page, pageSize);
-
+    let venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
 
     res.render("./pages/index", {
       references,
@@ -26,6 +26,7 @@ router.get("/references", async (req, res, next) => {
       currentPage: page,
       lastPage: Math.floor(total / pageSize),
       baseUrl: '/references',
+      venues,
     });
   } catch (err) {
     next(err);
@@ -38,16 +39,19 @@ router.get("/references/:reference_id/edit", async (req, res, next) => {
   try {
     let ref = await myDb.getReferenceByID(reference_id);
     let authors = await myDb.getAuthorsByReferenceID(reference_id);
+    let venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
 
     console.log("edit reference", {
       ref,
       authors,
+      venues,
       msg,
     });
 
     res.render("./pages/editReference", {
       ref,
       authors,
+      venues,
       msg,
     });
   } catch (err) {
@@ -58,13 +62,20 @@ router.get("/references/:reference_id/edit", async (req, res, next) => {
 router.post("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
   const ref = req.body;
+  const venueID = req.body.venueID || null;
 
   console.log("Received reference_id:", reference_id);
   console.log("Received ref object:", ref);
+  console.log("Received venueID:", venueID);
 
   try {
     let updateResult = await myDb.updateReferenceByID(reference_id, ref);
     console.log("update", updateResult.changes);
+
+    if (venueID) {
+      await myDb.updateEventVenueMapping(reference_id, venueID);
+      console.log("EventVenueMapping updated for eventID:", reference_id, "venueID:", venueID);
+    }
 
     if (updateResult && updateResult.changes === 1) {
       res.redirect("/references/?msg=Updated");
@@ -121,6 +132,9 @@ router.post("/createReference", async (req, res, next) => {
     const insertRes = await myDb.insertReference(ref);
 
     console.log("Inserted", insertRes);
+    if (insertRes && insertRes.lastID && ref.venueID) {
+      await myDb.addAuthorIDToReferenceID(ref.venueID, insertRes.lastID);
+    }
     res.redirect("/references/?msg=Inserted");
   } catch (err) {
     console.log("Error inserting", err);
@@ -152,6 +166,38 @@ router.get("/authors", async (req, res, next) => {
     next(err);
   }
 });
+
+router.get("/createReference", async (req, res, next) => {
+  try {
+    // Reuse existing getAuthors function to get all venues
+    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
+    res.render("./components/formCreateReference", {
+      venues, // Pass venues to the view
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/authors/:venue_id/delete", async (req, res, next) => {
+  const venueId = req.params.venue_id;
+
+  try {
+    // Delete the venue along with related events and mappings
+    let deleteResult = await myDb.deleteVenueByID(venueId);
+    console.log("delete", deleteResult);
+
+    if (deleteResult && deleteResult.changes === 1) {
+      res.redirect("/authors/?msg=Venue Deleted");
+    } else {
+      res.redirect("/authors/?msg=Error Deleting Venue");
+    }
+  } catch (err) {
+    console.error("Error during delete:", err);
+    next(err);
+  }
+});
+
 
 
 
