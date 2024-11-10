@@ -1,0 +1,81 @@
+{
+  "database": "EventHusk",
+  "collection": "venues",
+  "data": [
+    {
+      "venue_id": 1,
+      "venue_name": "Community Hall A",
+      "venue_location": "123 Main St",
+      "capacity": 100,
+      "policies": "No smoking",
+      "availability_status": "Available",
+      "venue_supervisor": "John Doe",
+      "venue_resources": [
+        {
+          "resource_id": 1,
+          "resource_type": "Projector",
+          "contact_name": "Tech Support",
+          "contact_details": "techsupport@example.com"
+        },
+        {
+          "resource_id": 2,
+          "resource_type": "Sound System",
+          "contact_name": "Audio Team",
+          "contact_details": "audio@example.com"
+        }
+      ]
+    },
+    {
+      "venue_id": 2,
+      "venue_name": "Community Hall B",
+      "venue_location": "456 Oak St",
+      "capacity": 150,
+      "policies": "No pets allowed",
+      "availability_status": "Available",
+      "venue_supervisor": "Jane Doe",
+      "venue_resources": [
+        {
+          "resource_id": 3,
+          "resource_type": "Lighting Equipment",
+          "contact_name": "Lighting Specialist",
+          "contact_details": "lighting@example.com"
+        }
+      ]
+    },
+    {
+      "venue_id": 3,
+      "venue_name": "Downtown Auditorium",
+      "venue_location": "789 Pine St",
+      "capacity": 300,
+      "policies": "Security required",
+      "availability_status": "Unavailable",
+      "venue_supervisor": "Sam Smith",
+      "venue_resources": [
+        {
+          "resource_id": 4,
+          "resource_type": "Stage Setup",
+          "contact_name": "Event Setup Team",
+          "contact_details": "setupteam@example.com"
+        }
+      ]
+    },
+    {
+      "venue_id": 4,
+      "venue_name": "Open Air Grounds",
+      "venue_location": "321 Park Ave",
+      "capacity": 500,
+      "policies": "Weather dependent",
+      "availability_status": "Available",
+      "venue_supervisor": "Michael Johnson"
+    },
+    {
+      "venue_id": 5,
+      "venue_name": "Conference Room C",
+      "venue_location": "654 Elm St",
+      "capacity": 50,
+      "policies": "No food or drinks",
+      "availability_status": "Available",
+      "venue_supervisor": "Emma Brown"
+    }
+  ]
+}

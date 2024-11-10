@@ -1,0 +1,122 @@
+[{
+  "_id": {
+    "$oid": "6730668577baf7204e49b136"
+  },
+  "user_id": 1,
+  "user_name": "premvora",
+  "password": "prem123",
+  "first_name": "Prem",
+  "last_name": "Vora",
+  "role": "Organizer",
+  "email": "voraprem20@gmail.com",
+  "contact": "714-592-0123",
+  "type": "Organizer"
+},
+{
+  "_id": {
+    "$oid": "6730668577baf7204e49b137"
+  },
+  "user_id": 2,
+  "user_name": "adamlevine",
+  "password": "adam123",
+  "first_name": "Adam",
+  "last_name": "Levine",
+  "role": "Attendee",
+  "email": "adlev@gmail.com",
+  "contact": "714-592-2222",
+  "type": "Attendee",
+  "rsvp": [
+    {
+      "rsvp_id": 1,
+      "status": "Confirmed",
+      "date": "2023-11-01",
+      "time": "12:00",
+      "event_id": 2
+    }
+  ],
+  "feedback": [
+    {
+      "feedback_id": 1,
+      "status": "Positive",
+      "date": "2023-12-02",
+      "time": "19:00",
+      "event_id": 1
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6730668577baf7204e49b138"
+  },
+  "user_id": 3,
+  "user_name": "jackvill",
+  "password": "jack123",
+  "first_name": "Jack",
+  "last_name": "Vill",
+  "role": "Attendee",
+  "email": "jackvil@gmail.com",
+  "contact": "714-592-2233",
+  "type": "Attendee",
+  "rsvp": [
+    {
+      "rsvp_id": 2,
+      "status": "Pending",
+      "date": "2023-11-05",
+      "time": "14:00",
+      "event_id": 4
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6730668577baf7204e49b139"
+  },
+  "user_id": 4,
+  "user_name": "songoku",
+  "password": "goku123",
+  "first_name": "Son",
+  "last_name": "Goku",
+  "role": "Organizer",
+  "email": "gokubest@gmail.com",
+  "contact": "714-987-2222",
+  "type": "Organizer"
+},
+{
+  "_id": {
+    "$oid": "6730668577baf7204e49b13a"
+  },
+  "user_id": 5,
+  "user_name": "alicewonder",
+  "password": "wonder123",
+  "first_name": "Alice",
+  "last_name": "Wonder",
+  "role": "Attendee",
+  "email": "alicewonder@gmail.com",
+  "contact": "714-334-5567",
+  "type": "Attendee",
+  "rsvp": [
+    {
+      "rsvp_id": 3,
+      "status": "Cancelled",
+      "date": "2023-11-10",
+      "time": "10:00",
+      "event_id": 1
+    },
+    {
+      "rsvp_id": 4,
+      "status": "Declined",
+      "date": "2023-11-12",
+      "time": "15:00",
+      "event_id": 3
+    }
+  ],
+  "feedback": [
+    {
+      "feedback_id": 2,
+      "status": "Neutral",
+      "date": "2023-11-16",
+      "time": "15:00",
+      "event_id": 3
+    }
+  ]
+}]

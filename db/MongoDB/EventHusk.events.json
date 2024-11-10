@@ -1,0 +1,65 @@
+[{
+  "_id": {
+    "$oid": "673066e777baf7204e49b13d"
+  },
+  "event_id": 1,
+  "event_name": "Charity Fundraiser",
+  "event_description": "A charity event to raise funds for local shelters.",
+  "date": "2023-12-01",
+  "time": "18:00",
+  "rsvp_deadline": "2023-11-28",
+  "user_id": 1,
+  "venue_id": 1
+},
+{
+  "_id": {
+    "$oid": "673066e777baf7204e49b13e"
+  },
+  "event_id": 2,
+  "event_name": "Tech Meetup",
+  "event_description": "An event for tech enthusiasts to network and share ideas.",
+  "date": "2023-11-15",
+  "time": "14:00",
+  "rsvp_deadline": "2023-11-10",
+  "user_id": 4,
+  "venue_id": 2
+},
+{
+  "_id": {
+    "$oid": "673066e777baf7204e49b13f"
+  },
+  "event_id": 3,
+  "event_name": "Art Exhibition",
+  "event_description": "Showcasing the work of local artists.",
+  "date": "2023-12-10",
+  "time": "11:00",
+  "rsvp_deadline": "2023-12-05",
+  "user_id": 1,
+  "venue_id": 3
+},
+{
+  "_id": {
+    "$oid": "673066e777baf7204e49b140"
+  },
+  "event_id": 4,
+  "event_name": "Music Festival",
+  "event_description": "A day-long festival featuring various local bands.",
+  "date": "2023-11-20",
+  "time": "12:00",
+  "rsvp_deadline": "2023-11-17",
+  "user_id": 4,
+  "venue_id": 1
+},
+{
+  "_id": {
+    "$oid": "673066e777baf7204e49b141"
+  },
+  "event_id": 5,
+  "event_name": "Health Workshop",
+  "event_description": "A workshop on healthy living and well-being.",
+  "date": "2023-11-25",
+  "time": "09:00",
+  "rsvp_deadline": "2023-11-22",
+  "user_id": 1,
+  "venue_id": 2
+}]
