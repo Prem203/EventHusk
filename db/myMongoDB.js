@@ -18,7 +18,7 @@ export async function getReferences(query, page, pageSize) {
     await client.connect();
 
     // Aggregation pipeline to join events with venues
-    const references = await eventsCollection
+    const events = await eventsCollection
       .aggregate([
         {
           $match: {
@@ -33,14 +33,14 @@ export async function getReferences(query, page, pageSize) {
             as: "venue_details", // Resulting field
           },
         },
-        { $unwind: "$venue_details" }, // Flatten the array from $lookup
+        { $unwind: { path: "$venue_details", preserveNullAndEmptyArrays: true } }, // Flatten the array from $lookup
         { $sort: { rsvp_deadline: -1 } }, // Sort by RSVP deadline descending
         { $skip: offset }, // Pagination: Skip to the correct page
         { $limit: pageSize }, // Limit the number of results
       ])
       .toArray();
 
-    return references;
+    return events;
   } catch (err) {
     console.error("Error fetching references:", err);
     throw err;
@@ -128,14 +128,19 @@ export async function insertReference(ref) {
   try {
     await client.connect();
 
+    const lastEvent = await eventsCollection.find().sort({ event_id: -1 }).limit(1).toArray();
+    const newEventId = lastEvent.length > 0 ? lastEvent[0].event_id + 1 : 1;
+
     // Prepare the reference object
     const newReference = {
+      event_id: newEventId,
       event_name: ref.event_name,
       event_description: ref.event_description,
       date: ref.date, // Assuming date is already in 'YYYY-MM-DD' format
       time: ref.time, // Assuming time is already in 'HH:mm' format
       rsvp_deadline: ref.rsvp_deadline ? new Date(ref.rsvp_deadline).toISOString() : null, // Convert RSVP deadline to ISO format
-      user_id: ref.user_id, // Assuming userID is provided
+      user_id: parseInt(ref.user_id, 10), // Assuming userID is provided
+      venue_id: ref.venue_id ? parseInt(ref.venue_id, 10) : null, // Assuming venueID is provided
     };
 
     // Insert the document into the collection
@@ -247,11 +252,13 @@ export async function updateReferenceByID(reference_id, ref) {
 
     // Prepare the update fields
     const updateFields = {
-      event_name: ref.eventName || "Name not specified",
-      event_description: ref.eventDescription || "Description not specified",
+      event_name: ref.event_name,
+      event_description: ref.event_description,
       date: ref.date || "Date not specified",
       time: ref.time || "Time not specified",
-      rsvp_deadline: ref.rsvpDeadline || "RSVP Deadline not specified",
+      rsvp_deadline: ref.rsvp_deadline,
+      user_id: parseInt(ref.user_id, 10),
+      venue_id: ref.venue_id ? parseInt(ref.venue_id, 10) : null,
     };
 
     // Update the event document by its ID

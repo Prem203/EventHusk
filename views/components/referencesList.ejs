@@ -36,11 +36,12 @@
             <div>RSVP Deadline not specified</div>
           <% } %>
 
-          <% if (ref.venue_name) { %>
-            <div><b>Venue:</b> <%= ref.venue_name %></div>
+          <% if (ref.venue_details && ref.venue_details.venue_name) { %>
+            <div><b>Venue:</b> <%= ref.venue_details.venue_name %></div>
           <% } else { %>
             <div>Venue: Not assigned</div>
           <% } %>
+          
 
         </div>
 

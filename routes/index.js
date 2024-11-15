@@ -71,14 +71,14 @@ router.post("/references/:reference_id/edit", async (req, res, next) => {
 
   try {
     const updateResult = await myDb.updateReferenceByID(reference_id, ref);
-    console.log("update", updateResult.changes);
+    console.log("update", updateResult);
 
     if (venueID) {
       await myDb.updateEventVenueMapping(reference_id, venueID);
       console.log("EventVenueMapping updated for eventID:", reference_id, "venueID:", venueID);
     }
 
-    if (updateResult && updateResult.changes === 1) {
+    if (updateResult && updateResult.modifiedCount === 1) {
       res.redirect("/references/?msg=Updated");
     } else {
       res.redirect("/references/?msg=Error Updating");
@@ -115,7 +115,7 @@ router.get("/references/:reference_id/delete", async (req, res, next) => {
     let deleteResult = await myDb.deleteReferenceByID(reference_id);
     console.log("delete", deleteResult);
 
-    if (deleteResult && deleteResult.changes === 1) {
+    if (deleteResult && deleteResult.deletedCount === 1) {
       res.redirect("/references/?msg=Deleted");
     } else {
       res.redirect("/references/?msg=Error Deleting");
