@@ -3,14 +3,14 @@
   <div>
     <label class="form-label">
       Event Name:
-      <input class="form-control" type="text" name="eventName" placeholder="Enter event name" required/></input>
+      <input class="form-control" type="text" name="event_name" placeholder="Enter event name" required/></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
       Description:
-      <input class="form-control" type="text" name="eventDescription" /></input>
+      <input class="form-control" type="text" name="event_description" /></input>
     </label>
   </div>
 
@@ -31,24 +31,24 @@
   <div>
     <label class="form-label">
       RSVP Deadline:
-      <input class="form-control" type="datetime-local" name="rsvpDeadline"></input>
+      <input class="form-control" type="datetime-local" name="rsvp_deadline"></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
       UserID:
-      <input class="form-control" type="text" name="userID" /></input>
+      <input class="form-control" type="text" name="user_id" /></input>
     </label>
   </div>
 
   <div>
     <label class="form-label">
       Venue:
-      <select class="form-control" name="venueID" required>
+      <select class="form-control" name="venue_id" required>
         <option value="" disabled selected>Select a venue</option>
         <% venues.forEach(function(venue) { %>
-          <option value="<%= venue.venueID %>"><%= venue.venueName %></option>
+          <option value="<%= venue.venue_id %>"><%= venue.venue_name %></option>
         <% }); %>
       </select>
     </label>

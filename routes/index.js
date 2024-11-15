@@ -1,5 +1,5 @@
 import express from "express";
-import * as myDb from "../db/mySqliteDB.js";
+import * as myDb from "../db/myMongoDB.js";
 
 const router = express.Router();
 
@@ -15,9 +15,10 @@ router.get("/references", async (req, res, next) => {
   const pageSize = +req.query.pageSize || 10;
   const msg = req.query.msg || null;
   try {
-    let total = await myDb.getReferencesCount(query);
-    let references = await myDb.getReferences(query, page, pageSize);
-    let venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
+    console.log("Query", query);
+    const total = await myDb.getReferencesCount(query);
+    const references = await myDb.getReferences(query, page, pageSize);
+    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
 
     res.render("./pages/index", {
       references,
@@ -37,9 +38,9 @@ router.get("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
   const msg = req.query.msg || null;
   try {
-    let ref = await myDb.getReferenceByID(reference_id);
-    let authors = await myDb.getAuthorsByReferenceID(reference_id);
-    let venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
+    const ref = await myDb.getReferenceByID(reference_id);
+    const authors = await myDb.getAuthorsByReferenceID(reference_id);
+    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
 
     console.log("edit reference", {
       ref,
@@ -69,7 +70,7 @@ router.post("/references/:reference_id/edit", async (req, res, next) => {
   console.log("Received venueID:", venueID);
 
   try {
-    let updateResult = await myDb.updateReferenceByID(reference_id, ref);
+    const updateResult = await myDb.updateReferenceByID(reference_id, ref);
     console.log("update", updateResult.changes);
 
     if (venueID) {
@@ -94,7 +95,7 @@ router.post("/references/:reference_id/addAuthor", async (req, res, next) => {
   const author_id = req.body.author_id;
 
   try {
-    let updateResult = await myDb.addAuthorIDToReferenceID(reference_id, author_id);
+    const updateResult = await myDb.addAuthorIDToReferenceID(reference_id, author_id);
     console.log("addAuthorIDToReferenceID", updateResult);
 
     if (updateResult && updateResult.changes === 1) {
@@ -132,8 +133,8 @@ router.post("/createReference", async (req, res, next) => {
     const insertRes = await myDb.insertReference(ref);
 
     console.log("Inserted", insertRes);
-    if (insertRes && insertRes.lastID && ref.venueID) {
-      await myDb.addAuthorIDToReferenceID(ref.venueID, insertRes.lastID);
+    if (insertRes && insertRes.lastID && ref.venue_id) {
+      await myDb.addAuthorIDToReferenceID(ref.venue_id, insertRes.lastID);
     }
     res.redirect("/references/?msg=Inserted");
   } catch (err) {
@@ -150,8 +151,8 @@ router.get("/authors", async (req, res, next) => {
   const pageSize = +req.query.pageSize || 24;
   const msg = req.query.msg || null;
   try {
-    let total = await myDb.getAuthorsCount(query);
-    let venues = await myDb.getAuthors(query, page, pageSize);
+    const total = await myDb.getAuthorsCount(query);
+    const venues = await myDb.getAuthors(query, page, pageSize);
 
 
     res.render("./pages/index_authors", {
@@ -184,7 +185,7 @@ router.get("/authors/:venue_id/delete", async (req, res, next) => {
 
   try {
     // Delete the venue along with related events and mappings
-    let deleteResult = await myDb.deleteVenueByID(venueId);
+    const deleteResult = await myDb.deleteVenueByID(venueId);
     console.log("delete", deleteResult);
 
     if (deleteResult && deleteResult.changes === 1) {
