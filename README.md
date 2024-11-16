@@ -1,6 +1,8 @@
 # EventHusk - Campus Events and Facility Booking System
 
-This project demonstrates various MongoDB queries on a sample event management dataset for the **EventHusk** application. The project includes multiple JavaScript files, each executing different types of MongoDB queries, such as aggregation, complex search criteria, counting documents, and updating document fields. 
+This project demonstrates various MongoDB queries on a sample event management dataset for the **EventHusk** application. The project includes multiple JavaScript files, each executing different types of MongoDB queries, such as aggregation, complex search criteria, counting documents, and updating document fields. Additionally, it contains an application with routes and functionality for managing events, venues, and RSVPs.
+
+---
 
 ## Project Structure
 
@@ -9,11 +11,18 @@ This project demonstrates various MongoDB queries on a sample event management d
 - `Query-3.js` - Counts RSVP entries for a specific attendee.
 - `Query-4.js` - Updates RSVP status based on specific conditions.
 - `Query-5.js` - Finds available venues with specific resources and capacity.
+- `routes/` - Contains route files for the Express.js application.
+- `views/` - Contains EJS template files for rendering the UI.
+- `app.js` - Entry point for the Node.js application.
+
+---
 
 ## Prerequisites
 
 1. **Node.js**: Install Node.js from [https://nodejs.org/](https://nodejs.org/) if you don't already have it.
 2. **MongoDB**: Install MongoDB locally and start the MongoDB server on your machine. Refer to [MongoDB installation guide](https://docs.mongodb.com/manual/installation/).
+
+---
 
 ## Setting Up the Project
 
@@ -23,22 +32,46 @@ This project demonstrates various MongoDB queries on a sample event management d
    cd EventHusk
    ```
 
-2. **Install MongoDB Driver for Node.js**: This project uses MongoDB's native Node.js driver.
+2. **Install Dependencies**: Install all required Node.js modules.
    ```bash
-   npm install mongodb
+   npm install
    ```
 
 3. **Data Import**: Import the JSON files (`EventHusk.events.json`, `EventHusk.users.json`, and `EventHusk.venues.json`) into the `EventHusk` database. You can use the following commands in your terminal:
-
    ```bash
    mongoimport --db EventHusk --collection events --file db/MongoDB/EventHusk.events.json --jsonArray
    mongoimport --db EventHusk --collection users --file db/MongoDB/EventHusk.users.json --jsonArray
    mongoimport --db EventHusk --collection venues --file db/MongoDB/EventHusk.venues.json --jsonArray
    ```
-   These commands assume the JSON files are in the root directory of your project.
+   These commands assume the JSON files are in the `db/MongoDB/` directory.
 
+4. **Run the Application**:
+   Start the application using the following command:
+   ```bash
+   npm start
+   ```
+   This will start the server on `http://localhost:3000`.
 
-### Executing Each Query
+---
+
+## Running the Application
+
+1. **Access the Web Application**:
+   - Open your browser and navigate to `http://localhost:3000`.
+   - The home page allows you to manage events, venues, and RSVPs through a user-friendly interface.
+
+2. **Features**:
+   - **List Events**: View all events in the system.
+   - **Edit Events**: Update event details such as name, description, date, time, RSVP deadlines, and venue.
+   - **Delete Events**: Remove an event from the system.
+   - **Venue Management**: View, add, edit, or delete venues along with their resources and availability.
+   - **RSVP Management**: View and update RSVP statuses for attendees.
+
+---
+
+## Executing Queries
+
+The project also includes several standalone MongoDB queries for specific use cases. Each query is located in its own file. Below are instructions to run them:
 
 1. **Run Query-1.js (Aggregation Query)**
 
@@ -75,19 +108,20 @@ This project demonstrates various MongoDB queries on a sample event management d
    node Query-5.js
    ```
 
-## Explanation of Queries
-
-Each query file performs a different type of MongoDB operation:
-- **Query-1.js**: Uses MongoDB's aggregation framework to perform a lookup and count attendees per event.
-- **Query-2.js**: Uses complex search criteria with `$or` operators to filter events based on organizer, venue, and RSVP deadlines.
-- **Query-3.js**: Counts RSVP entries by projecting the size of the `rsvp` array for a specific user.
-- **Query-4.js**: Updates a document using `$set` to change the RSVP status conditionally.
-- **Query-5.js**: Filters venues based on availability, resource type, and capacity using a straightforward find query.
+---
 
 ## Troubleshooting
 
-- **MongoDB Connection Issues**: Ensure MongoDB is running locally. The `uri` in each query file is set to `"mongodb://localhost:27017"`. If your MongoDB instance is configured differently, update this URI.
-- **Data Not Returning**: If any query returns an empty result, double-check the criteria in the query to ensure it matches the values in your dataset. You can view the data directly in MongoDB to verify.
+- **MongoDB Connection Issues**:
+  Ensure MongoDB is running locally. The `uri` in each query file is set to `"mongodb://localhost:27017"`. If your MongoDB instance is configured differently, update this URI in the application and query files.
+
+- **Data Not Returning**:
+  If any query returns an empty result, double-check the criteria in the query to ensure it matches the values in your dataset. You can view the data directly in MongoDB to verify.
+
+- **Application Errors**:
+  If the application throws errors, ensure all dependencies are installed and the MongoDB database is correctly populated with the required collections (`events`, `venues`, `users`).
+
+---
 
 ## License
 
