@@ -301,24 +301,24 @@ export async function getAuthorsCount(query) {
   }
 }
 
-export async function updateEventVenueMapping(eventID, venueID) {
-  console.log("Updating EventVenueMapping for eventID:", eventID, "venueID:", venueID);
+export async function updateEventVenueMapping(event_id, venue_id) {
+  console.log("Updating EventVenueMapping for eventID:", event_id, "venueID:", venue_id);
 
   try {
     await client.connect();
 
     // Update the `venue_id` field of the specified event document
     const result = await eventsCollection.updateOne(
-      { event_id: parseInt(eventID) }, // Match the event by ID
-      { $set: { venue_id: venueID } }, // Set or update the venue_id field
+      { event_id: parseInt(event_id) }, // Match the event by ID
+      { $set: { venue_id: venue_id } }, // Set or update the venue_id field
       { upsert: true } // Insert a new document if it doesn’t exist
     );
 
     if (result.matchedCount === 0 && result.upsertedCount === 0) {
-      throw new Error(`Event with ID ${eventID} could not be updated or created`);
+      throw new Error(`Event with ID ${event_id} could not be updated or created`);
     }
 
-    console.log(`Updated or inserted mapping for event ID: ${eventID}, venueID: ${venueID}`);
+    console.log(`Updated or inserted mapping for event ID: ${event_id}, venueID: ${venue_id}`);
     return result; // Return the result object for further use
   } catch (err) {
     console.error("Error updating event-venue mapping:", err);
@@ -328,8 +328,8 @@ export async function updateEventVenueMapping(eventID, venueID) {
   }
 }
 
-export async function getEventsByVenueID(venueID) {
-  console.log("Getting events for venueID:", venueID);
+export async function getEventsByVenueID(venue_id) {
+  console.log("Getting events for venueID:", venue_id);
 
   try {
     await client.connect();
@@ -337,7 +337,7 @@ export async function getEventsByVenueID(venueID) {
     // Use an aggregation pipeline to filter events by venueID
     const events = await eventsCollection
       .aggregate([
-        { $match: { venue_id: venueID } }, // Filter by venue_id
+        { $match: { venue_id: venue_id } }, // Filter by venue_id
         {
           $lookup: {
             from: "venues", // Join with the venues collection
@@ -360,23 +360,24 @@ export async function getEventsByVenueID(venueID) {
   }
 }
 
-export async function deleteVenueByID(venueID) {
-  console.log("deleteVenueByID", venueID);
+export async function deleteVenueByID(venue_id) {
+  console.log("deleteVenueByID", venue_id);
 
   try {
     await client.connect();
 
+    const venueIdInt = parseInt(venue_id, 10);
     // Step 1: Delete events associated with the venue
-    const deleteEventsResult = await eventsCollection.deleteMany({ venue_id: venueID });
-    console.log(`Deleted ${deleteEventsResult.deletedCount} events associated with venueID:`, venueID);
+    const deleteEventsResult = await eventsCollection.deleteMany({ venue_id: venueIdInt });
+    console.log(`Deleted ${deleteEventsResult.deletedCount} events associated with venueID:`, venue_id);
 
     // Step 2: Delete the venue itself
-    const deleteVenueResult = await venuesCollection.deleteOne({ venue_id: venueID });
+    const deleteVenueResult = await venuesCollection.deleteOne({ venue_id: venueIdInt });
     if (deleteVenueResult.deletedCount === 0) {
-      throw new Error(`Venue with ID ${venueID} not found`);
+      throw new Error(`Venue with ID ${venue_id} not found`);
     }
 
-    console.log(`Deleted venue with venueID: ${venueID}`);
+    console.log(`Deleted venue with venueID: ${venue_id}`);
     return {
       eventsDeleted: deleteEventsResult.deletedCount,
       venueDeleted: deleteVenueResult.deletedCount,

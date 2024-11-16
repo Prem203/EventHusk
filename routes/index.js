@@ -188,7 +188,7 @@ router.get("/authors/:venue_id/delete", async (req, res, next) => {
     const deleteResult = await myDb.deleteVenueByID(venueId);
     console.log("delete", deleteResult);
 
-    if (deleteResult && deleteResult.changes === 1) {
+    if (deleteResult && deleteResult.venueDeleted === 1) {
       res.redirect("/authors/?msg=Venue Deleted");
     } else {
       res.redirect("/authors/?msg=Error Deleting Venue");
