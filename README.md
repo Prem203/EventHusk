@@ -58,14 +58,13 @@ This project demonstrates various MongoDB queries on a sample event management d
 
 1. **Access the Web Application**:
    - Open your browser and navigate to `http://localhost:3000`.
-   - The home page allows you to manage events, venues, and RSVPs through a user-friendly interface.
+   - The home page allows you to manage events and venues through a user-friendly interface.
 
 2. **Features**:
    - **List Events**: View all events in the system.
    - **Edit Events**: Update event details such as name, description, date, time, RSVP deadlines, and venue.
    - **Delete Events**: Remove an event from the system.
    - **Venue Management**: View, add, edit, or delete venues along with their resources and availability.
-   - **RSVP Management**: View and update RSVP statuses for attendees.
 
 ---
 
