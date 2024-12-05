@@ -1,41 +1,48 @@
-
-<% if (lastPage > -1) { %>
-
-  <nav aria-label="References Pagination">
+<% if (lastPage > 0) { %>
+  <nav aria-label="Pagination">
     <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="<%= baseUrl + '?page=' + (currentPage - 1) %>">Previous</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="<%= baseUrl + '?page=' + 1 %>"><%= 1 %></a>
-      </li>
-      <li>...</li>
 
-      <% for(let p = Math.max(currentPage-5, 2);
-        p <= (currentPage+5);
-        p+=1) { %>
-        <li class="<%= 'page-item' + ( p === currentPage ? ' active' : '') %>">
+      <!-- Previous Button -->
+      <li class="page-item <%= currentPage <= 1 ? 'disabled' : '' %>">
+        <a class="page-link" href="<%= currentPage > 1 ? baseUrl + '?page=' + (currentPage - 1) : '#' %>">Previous</a>
+      </li>
+
+      <!-- First Page -->
+      <li class="page-item <%= currentPage === 1 ? 'active' : '' %>">
+        <a class="page-link" href="<%= baseUrl + '?page=1' %>">1</a>
+      </li>
+
+      <!-- Left Ellipsis -->
+      <% if (currentPage > 6) { %>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      <% } %>
+
+      <!-- Dynamic Page Numbers -->
+      <% for (let p = Math.max(2, currentPage - 5); p <= Math.min(lastPage - 1, currentPage + 5); p++) { %>
+        <li class="page-item <%= p === currentPage ? 'active' : '' %>">
           <a class="page-link" href="<%= baseUrl + '?page=' + p %>"><%= p %></a>
         </li>
       <% } %>
 
-      <!-- <li class="page-item active" aria-current="page">
-          <span class="page-link">2</span>
+      <!-- Right Ellipsis -->
+      <% if (currentPage < lastPage - 5) { %>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      <% } %>
+
+      <!-- Last Page -->
+      <% if (lastPage > 1) { %>
+        <li class="page-item <%= currentPage === lastPage ? 'active' : '' %>">
+          <a class="page-link" href="<%= baseUrl + '?page=' + lastPage %>"><%= lastPage %></a>
         </li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-     -->
-      <li>...</li>
-      <li class="page-item">
-        <a class="page-link" href="<%= baseUrl + '?page=' + lastPage %>"
-          ><%= lastPage %></a
-        >
+      <% } %>
+
+      <!-- Next Button -->
+      <li class="page-item <%= currentPage >= lastPage ? 'disabled' : '' %>">
+        <a class="page-link" href="<%= currentPage < lastPage ? baseUrl + '?page=' + (currentPage + 1) : '#' %>">Next</a>
       </li>
-      <li class="page-item">
-        <a class="page-link" href="<%= baseUrl + '?page=' + (currentPage + 1) %>">Next</a>
-      </li>
+
     </ul>
   </nav>
 <% } else { %>
-  <div>No pagination <%= lastPage %> </div>
+  <div>No pagination available.</div>
 <% } %>
-

@@ -1,57 +1,65 @@
-<h2></h2>
+<h2>Edit Event</h2>
 
-<form
-  action=" <%= '/references/' + ref.event_id + '/edit' %>"
-  method="POST"
->
-  <div>
+<form action="<%= '/references/' + ref.event_id + '/edit' %>" method="POST">
+  <!-- Event Name -->
+  <div class="mb-3">
     <label class="form-label">
       Event Name:
       <input
         class="form-control"
         type="text"
         name="event_name"
-        value="<%= ref.event_name %>"
-      />
-    </label>
-  </div>
-  <div>
-    <label class="form-label">
-      Description:
-      <input
-        class="form-control"
-        type="text"
-        name="event_description"
-        value="<%= ref.event_description %>"
+        value="<%= ref.event_name || '' %>"
+        placeholder="Enter event name"
+        required
       />
     </label>
   </div>
 
-  <div>
+  <!-- Event Description -->
+  <div class="mb-3">
+    <label class="form-label">
+      Description:
+      <textarea
+        class="form-control"
+        name="event_description"
+        placeholder="Enter event description"
+        rows="4"
+        required
+      ><%= ref.event_description || '' %></textarea>
+    </label>
+  </div>
+
+  <!-- Date -->
+  <div class="mb-3">
     <label class="form-label">
       Date:
       <input
         class="form-control"
         type="date"
         name="date"
-        value="<%= ref.date %>"
+        value="<%= ref.date ? ref.date.split('T')[0] : '' %>"
+        required
       />
     </label>
   </div>
 
-  <div>
+  <!-- Time -->
+  <div class="mb-3">
     <label class="form-label">
       Time:
       <input
         class="form-control"
         type="time"
         name="time"
-        value="<%= ref.time %>"
+        value="<%= ref.time || '' %>"
+        required
       />
     </label>
   </div>
 
-  <div>
+  <!-- RSVP Deadline -->
+  <div class="mb-3">
     <label class="form-label">
       RSVP Deadline:
       <input
@@ -63,35 +71,46 @@
     </label>
   </div>
 
-  <div>
+  <!-- User ID -->
+  <div class="mb-3">
     <label class="form-label">
-      UserID:
+      User ID:
       <input
         class="form-control"
         type="text"
         name="user_id"
-        value="<%= ref.user_id %>"
+        value="<%= ref.user_id || '' %>"
+        placeholder="Enter user ID"
+        required
       />
     </label>
   </div>
 
-  <div>
+  <!-- Venue Selection -->
+  <div class="mb-3">
     <label class="form-label">
       Venue:
       <select class="form-control" name="venue_id" required>
         <option value="" disabled>Select a venue</option>
         <% venues.forEach(function(venue) { %>
-          <option value="<%= venue.venue_id %>" <%= venue.venueID == ref.venue_id ? 'selected' : '' %>><%= venue.venue_name %></option>
+          <option value="<%= venue.venue_id %>" <%= venue.venue_id == ref.venue_id ? 'selected' : '' %>>
+            <%= venue.venue_name || 'Unnamed Venue' %>
+          </option>
         <% }); %>
       </select>
     </label>
   </div>
-  
 
-  <button type="submit" class="btn btn-primary">Edit</button>
-  <a
-    class="btn btn-danger"
-    href="<%= '/references/' + ref.event_id + '/delete' %>"
-    >Delete</a
-  >
+  <!-- Buttons -->
+  <div class="mt-4">
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a
+      class="btn btn-secondary"
+      href="/references"
+    >Cancel</a>
+    <a
+      class="btn btn-danger"
+      href="<%= '/references/' + ref.event_id + '/delete' %>"
+    >Delete</a>
+  </div>
 </form>

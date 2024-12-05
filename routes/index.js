@@ -1,5 +1,5 @@
 import express from "express";
-import * as myDb from "../db/myMongoDB.js";
+import * as myDb from "../db/myRedisDB.js";
 
 const router = express.Router();
 
@@ -13,52 +13,50 @@ router.get("/references", async (req, res, next) => {
   const query = req.query.q || "";
   const page = +req.query.page || 1;
   const pageSize = +req.query.pageSize || 10;
-  const msg = req.query.msg || null;
+  const msg = req.query.msg || null; 
+
   try {
-    console.log("Query", query);
     const total = await myDb.getReferencesCount(query);
     const references = await myDb.getReferences(query, page, pageSize);
-    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
+    const venues = await myDb.getAuthors("", 1, 100);
+
+    for (const reference of references) {
+      if (reference.venue_id) {
+        const venue = await myDb.getVenueByID(reference.venue_id);
+        reference.venue_details = venue; // Append venue details to the reference
+      }
+    }
 
     res.render("./pages/index", {
       references,
       query,
       msg,
-      currentPage: page,
-      lastPage: Math.floor(total / pageSize),
-      baseUrl: '/references',
       venues,
+      currentPage: page,
+      lastPage: Math.ceil(total / pageSize),
     });
   } catch (err) {
     next(err);
   }
 });
 
+
 router.get("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
-  const msg = req.query.msg || null;
+
   try {
     const ref = await myDb.getReferenceByID(reference_id);
     const authors = await myDb.getAuthorsByReferenceID(reference_id);
-    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
-
-    console.log("edit reference", {
-      ref,
-      authors,
-      venues,
-      msg,
-    });
 
     res.render("./pages/editReference", {
       ref,
       authors,
-      venues,
-      msg,
     });
   } catch (err) {
     next(err);
   }
 });
+
 
 router.post("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
@@ -112,18 +110,13 @@ router.get("/references/:reference_id/delete", async (req, res, next) => {
   const reference_id = req.params.reference_id;
 
   try {
-    let deleteResult = await myDb.deleteReferenceByID(reference_id);
-    console.log("delete", deleteResult);
-
-    if (deleteResult && deleteResult.deletedCount === 1) {
-      res.redirect("/references/?msg=Deleted");
-    } else {
-      res.redirect("/references/?msg=Error Deleting");
-    }
+    await myDb.deleteReferenceByID(reference_id);
+    res.redirect("/references/?msg=Deleted");
   } catch (err) {
     next(err);
   }
 });
+
 
 router.post("/createReference", async (req, res, next) => {
   const ref = req.body;
@@ -156,7 +149,7 @@ router.get("/authors", async (req, res, next) => {
 
 
     res.render("./pages/index_authors", {
-      venues,
+      venues: venues||[], // Pass venues to the view
       query,
       msg,
       currentPage: page,
@@ -168,17 +161,27 @@ router.get("/authors", async (req, res, next) => {
   }
 });
 
-router.get("/createReference", async (req, res, next) => {
+router.post("/createReference", async (req, res, next) => {
+  const ref = req.body;
+  console.log("Received req object:", req.body);
+
   try {
-    // Reuse existing getAuthors function to get all venues
-    const venues = await myDb.getAuthors("", 1, 100); // Fetch all venues (with a large enough page size)
-    res.render("./components/formCreateReference", {
-      venues, // Pass venues to the view
-    });
+    // Validate venue_id
+    const venue = await myDb.getVenueByID(ref.venue_id);
+    if (!venue) {
+      return res.redirect("/references/?msg=Invalid venue selected");
+    }
+
+    const insertRes = await myDb.insertReference(ref);
+    console.log("Inserted", insertRes);
+
+    res.redirect("/references/?msg=Event created successfully");
   } catch (err) {
+    console.log("Error inserting", err);
     next(err);
   }
 });
+
 
 router.get("/authors/:venue_id/delete", async (req, res, next) => {
   const venueId = req.params.venue_id;

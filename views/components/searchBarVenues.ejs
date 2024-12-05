@@ -1,0 +1,21 @@
+<form action="/authors" method="GET">
+    <div class="input-group">
+      <!-- Label for Accessibility -->
+      <label for="searchInput" class="visually-hidden">Search Venues</label>
+  
+      <!-- Search Input -->
+      <input
+        id="searchInput"
+        class="form-control"
+        type="text"
+        name="q"
+        placeholder="Search by name"
+        value="<%= query || '' %>"
+        aria-label="Search Venues"
+      />
+  
+      <!-- Search Button -->
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+  

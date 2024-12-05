@@ -8,16 +8,21 @@
     <div class="container">
       <h1>Change Event Details</h1>
 
-
+      <!-- Display Success or Error Message -->
       <% if (msg) { %>
         <div class="alert alert-primary">
           <%= msg %>
         </div>
       <% } %>
 
-      <%- include("../components/formEditReference.ejs", { ref }) %>
-
-
+      <!-- Check if Event Data is Available -->
+      <% if (ref) { %>
+        <%- include("../components/formEditReference.ejs", { ref }) %>
+      <% } else { %>
+        <div class="alert alert-warning">
+          Event details not found. Please go back and select a valid event to edit.
+        </div>
+      <% } %>
 
     </div>
 

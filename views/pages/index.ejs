@@ -8,24 +8,37 @@
     <div class="container">
       <h1>Events</h1>
 
-
       <% if (msg) { %>
         <div class="alert alert-primary">
           <%= msg %>
         </div>
       <% } %>
 
-
       <div class="row">
+        <!-- Left Column: Event List -->
         <div class="col-8">
+          <!-- Include Search Bar -->
           <%- include("../components/searchBar.ejs", { query }) %>
-          <%- include("../components/referencesList.ejs", { references, currentPage, lastPage }) %>
+
+          <!-- Include Event List -->
+          <% if (references && references.length > 0) { %>
+            <%- include("../components/referencesList.ejs", { references, currentPage, lastPage }) %>
+          <% } else { %>
+            <div class="alert alert-warning">No events found. Try searching for a different term or create a new event.</div>
+          <% } %>
         </div>
+
+        <!-- Right Column: Create Event Form -->
         <div class="col-4">
-          <%- include("../components/formCreateReference.ejs", { venues }) %>
+          <% if (Array.isArray(venues) && venues.length > 0) { %>
+            <%- include("../components/formCreateReference.ejs", { venues }) %>
+          <% } else { %>
+            <div class="alert alert-info">
+              No venues available.
+            </div>
+          <% } %>
         </div>
       </div>
-
     </div>
 
     <%- include("../templates/footer.ejs") %>

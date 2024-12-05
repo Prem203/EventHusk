@@ -1,12 +1,20 @@
-<form action="/references/">
+<form action="/references/" method="GET">
   <div class="input-group">
+    <!-- Label for Accessibility -->
+    <label for="searchInput" class="visually-hidden">Search Events</label>
+
+    <!-- Search Input -->
     <input
+      id="searchInput"
       class="form-control"
       type="text"
       name="q"
-      placeholder="Search"
-      value="<%= query %>"
+      placeholder="Search by name"
+      value="<%= query || '' %>"
+      aria-label="Search Events"
     />
-    <button type="submit" class="btn-primary btn">Search</button>
+
+    <!-- Search Button -->
+    <button type="submit" class="btn btn-primary">Search</button>
   </div>
 </form>

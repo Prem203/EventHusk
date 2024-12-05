@@ -1,51 +1,94 @@
 <h2>Add an Event</h2>
 <form action="/createReference" method="POST">
-  <div>
-    <label class="form-label">
+  <!-- Event Name -->
+  <div class="mb-3">
+    <label for="eventName" class="form-label">
       Event Name:
-      <input class="form-control" type="text" name="event_name" placeholder="Enter event name" required/></input>
+      <input
+        id="eventName"
+        class="form-control"
+        type="text"
+        name="event_name"
+        placeholder="Enter event name"
+        required
+      />
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
+  <!-- Description -->
+  <div class="mb-3">
+    <label for="eventDescription" class="form-label">
       Description:
-      <input class="form-control" type="text" name="event_description" /></input>
+      <textarea
+        id="eventDescription"
+        class="form-control"
+        name="event_description"
+        placeholder="Enter a short description"
+        rows="3"
+      ></textarea>
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
+  <!-- Date -->
+  <div class="mb-3">
+    <label for="eventDate" class="form-label">
       Date:
-      <input class="form-control" type="date" name="date" required/></input>
+      <input
+        id="eventDate"
+        class="form-control"
+        type="date"
+        name="date"
+        required
+      />
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
+  <!-- Time -->
+  <div class="mb-3">
+    <label for="eventTime" class="form-label">
       Time:
-      <input class="form-control" type="time" name="time" required></input>
+      <input
+        id="eventTime"
+        class="form-control"
+        type="time"
+        name="time"
+        required
+      />
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
+  <!-- RSVP Deadline -->
+  <div class="mb-3">
+    <label for="rsvpDeadline" class="form-label">
       RSVP Deadline:
-      <input class="form-control" type="datetime-local" name="rsvp_deadline"></input>
+      <input
+        id="rsvpDeadline"
+        class="form-control"
+        type="datetime-local"
+        name="rsvp_deadline"
+      />
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
-      UserID:
-      <input class="form-control" type="text" name="user_id" /></input>
+  <!-- User ID -->
+  <div class="mb-3">
+    <label for="userID" class="form-label">
+      User ID:
+      <input
+        id="userID"
+        class="form-control"
+        type="text"
+        name="user_id"
+        placeholder="Enter user ID"
+      />
     </label>
   </div>
 
-  <div>
-    <label class="form-label">
+  <!-- Venue Selection -->
+  <div class="mb-3">
+    <label for="venue" class="form-label">
       Venue:
-      <select class="form-control" name="venue_id" required>
+      <select id="venue" class="form-control" name="venue_id" required>
         <option value="" disabled selected>Select a venue</option>
         <% venues.forEach(function(venue) { %>
           <option value="<%= venue.venue_id %>"><%= venue.venue_name %></option>
@@ -53,6 +96,9 @@
       </select>
     </label>
   </div>
-  
-  <button class="btn btn-primary" type="submit">Create</button>
+
+  <!-- Submit Button -->
+  <div class="mt-4">
+    <button class="btn btn-primary" type="submit">Create</button>
+  </div>
 </form>

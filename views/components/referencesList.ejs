@@ -1,58 +1,80 @@
 <br />
 <h2 class="mb-4 text-primary">Event Listings</h2>
-<% if (references.length === 0) { %>
-  <div class="alert alert-primary">No Events found</div>
-<% } %>
 
-<div class="row g-3">
-  <% for (let ref of references) { %>
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <div class="card h-100 p-2 shadow-sm">
-        <h5 class="card-title text-truncate"><%= ref.event_name || 'Unknown Event' %></h5>
-        <div class="card-body">
-          <p class="card-text">
-            <% if (ref.event_description) { %>
-              <div class="text-wrap">Description: <%= ref.event_description %></div>
+<!-- Handle Case with No Events -->
+<% if (!references || references.length === 0) { %>
+  <div class="alert alert-primary">No events found. Try creating a new event!</div>
+<% } else { %>
+
+  <div class="row g-3">
+    <% references.forEach(ref => { %>
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 p-2 shadow-sm">
+          <!-- Event Name -->
+          <h5 class="card-title text-truncate">
+            <%= ref.event_name || 'Unknown Event' %>
+          </h5>
+
+          <div class="card-body">
+            <!-- Description -->
+            <p class="card-text">
+              <% if (ref.event_description) { %>
+                <div class="text-wrap">Description: <%= ref.event_description %></div>
+              <% } else { %>
+                <div>Description not specified</div>
+              <% } %>
+            </p>
+
+            <!-- Date -->
+            <% if (ref.date) { %>
+              <div>Date: <%= new Date(ref.date).toLocaleDateString() %></div>
             <% } else { %>
-              <div>Description not specified</div>
+              <div>Date not specified</div>
             <% } %>
-          </p>
 
-          <% if (ref.date) { %>
-            <div>Date: <%= ref.date %></div>
-          <% } else { %>
-            <div>Date not specified</div>
-          <% } %>
+            <!-- Time -->
+            <% if (ref.time) { %>
+              <div>Time: <%= ref.time %></div>
+            <% } else { %>
+              <div>Time not specified</div>
+            <% } %>
 
-          <% if (ref.time) { %>
-            <div>Time: <%= ref.time %></div>
-          <% } else { %>
-            <div>Time not specified</div>
-          <% } %>
+            <!-- RSVP Deadline -->
+            <% if (ref.rsvp_deadline) { %>
+              <div>RSVP Deadline: <%= new Date(ref.rsvp_deadline).toLocaleString() %></div>
+            <% } else { %>
+              <div>RSVP Deadline not specified</div>
+            <% } %>
 
-          <% if (ref.rsvp_deadline) { %>
-            <div>RSVP Deadline: <%= ref.rsvp_deadline %></div>
-          <% } else { %>
-            <div>RSVP Deadline not specified</div>
-          <% } %>
+            <!-- Venue -->
+            <% if (ref.venue_details && ref.venue_details.venue_name) { %>
+              <div><b>Venue:</b> <%= ref.venue_details.venue_name %></div>
+            <% } else { %>
+              <div>Venue: Not assigned</div>
+            <% } %>
+          </div>
 
-          <% if (ref.venue_details && ref.venue_details.venue_name) { %>
-            <div><b>Venue:</b> <%= ref.venue_details.venue_name %></div>
-          <% } else { %>
-            <div>Venue: Not assigned</div>
-          <% } %>
-          
-
-        </div>
-
-        <div class="card-footer d-flex justify-content-between">
-          <a class="btn btn-outline-primary btn-sm" href="<%= '/references/' + ref.event_id + '/edit' %>">Edit</a>
-          <a class="btn btn-outline-danger btn-sm" href="<%= '/references/' + ref.event_id + '/delete' %>">Delete</a>
+          <!-- Action Buttons -->
+          <div class="card-footer d-flex justify-content-between">
+            <a
+              class="btn btn-outline-primary btn-sm"
+              href="<%= '/references/' + ref.event_id + '/edit' %>"
+            >
+              Edit
+            </a>
+            <a
+              class="btn btn-outline-danger btn-sm"
+              href="<%= '/references/' + ref.event_id + '/delete' %>"
+            >
+              Delete
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  <% } %>
+    <% }); %>
+  </div>
 
-
+  <!-- Pagination -->
   <%- include("./pagination.ejs", { baseUrl: '/references', currentPage, lastPage }) %>
-</div>
+
+<% } %>

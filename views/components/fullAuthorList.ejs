@@ -1,32 +1,26 @@
 <h2>Venues</h2>
 
-<% if (venues.length > 0) { %>
+<% if (venues && venues.length > 0) { %>
   <div class="row g-3">
     <% for (let venue of venues) { %>
-    <div class="col-4">
-      <div class="card p-1">
-        <h5 class="card-title"><%= venue.venue_name %></h5>
-        <div class="card-text">
-          <div>Location: <%= venue.venue_location %></div>
-          <div>Capacity: <%= venue.capacity %> </div>
-          <div>Policies: <%= venue.policies %></div>
-          <div>Availability Status: <%= venue.availability_status %></div>
-          <div>Person Responsible: <%= venue.venue_supervisor %></div>
-          <div>
-            <!-- <a
-              class="btn btn-outline-primary"
-              href="<%= '/authors/' + venue.venue_id + '/edit' %>"
-              >Edit</a
-            > -->
-            <a
-              class="btn btn-outline-danger"
-              href="<%= '/authors/' + venue.venue_id + '/delete' %>"
-              >Delete</a
-            >
+      <div class="col-4">
+        <div class="card p-1">
+          <h5 class="card-title"><%= venue.venue_name || 'Unnamed Venue' %></h5>
+          <div class="card-text">
+            <div>Location: <%= venue.venue_location || 'Unknown' %></div>
+            <div>Capacity: <%= venue.capacity || 'Not specified' %></div>
+            <div>Policies: <%= venue.policies || 'No policies specified' %></div>
+            <div>Availability Status: <%= venue.availability_status || 'Unknown' %></div>
+            <div>Person Responsible: <%= venue.venue_supervisor || 'Not assigned' %></div>
+            <div>
+              <a
+                class="btn btn-outline-danger"
+                href="<%= '/authors/' + venue.venue_id + '/delete' %>"
+              >Delete</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     <% } %>
   </div>
 <% } else { %>
