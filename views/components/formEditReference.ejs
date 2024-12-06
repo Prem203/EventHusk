@@ -87,19 +87,23 @@
   </div>
 
   <!-- Venue Selection -->
-  <div class="mb-3">
-    <label class="form-label">
-      Venue:
-      <select class="form-control" name="venue_id" required>
-        <option value="" disabled>Select a venue</option>
-        <% venues.forEach(function(venue) { %>
+<div class="mb-3">
+  <label class="form-label">
+    Venue:
+    <select class="form-control" name="venue_id" required>
+      <option value="" disabled>Select a venue</option>
+      <% if (Array.isArray(venues) && venues.length > 0) { %>
+        <% venues.forEach(function (venue) { %>
           <option value="<%= venue.venue_id %>" <%= venue.venue_id == ref.venue_id ? 'selected' : '' %>>
             <%= venue.venue_name || 'Unnamed Venue' %>
           </option>
         <% }); %>
-      </select>
-    </label>
-  </div>
+      <% } else { %>
+        <option value="" disabled>No venues available</option>
+      <% } %>
+    </select>
+  </label>
+</div>
 
   <!-- Buttons -->
   <div class="mt-4">

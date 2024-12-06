@@ -255,24 +255,46 @@ export async function updateEventVenueMapping(event_id, venue_id) {
 }
 
 export async function deleteVenueByID(venue_id) {
-    console.log("deleteVenueByID", venue_id);
-  
-    try {
-      const allEventKeys = await redis.keys('event:*');
-      for (const key of allEventKeys) {
-        const event = await redis.hgetall(key);
-        if (event.venue_id === venue_id) {
-          await redis.del(key);
-        }
+  console.log("deleteVenueByID", venue_id);
+
+  try {
+    // Fetch all event keys
+    const allEventKeys = await redis.keys('event:*');
+
+    for (const key of allEventKeys) {
+      const keyType = await redis.type(key);
+
+      // Skip non-hash keys (e.g., event:id counter)
+      if (keyType !== 'hash') {
+        console.log(`[DEBUG] Skipping non-hash key: ${key} (type: ${keyType})`);
+        continue;
       }
-  
-      const result = await redis.del(`venue:${venue_id}`);
-      console.log(`Deleted venue with ID: ${venue_id}`);
-      return result;
-    } catch (err) {
-      console.error("Error deleting venue:", err);
-      throw err;
+
+      const event = await redis.hgetall(key);
+
+      // Delete events associated with the venue
+      if (event.venue_id === venue_id) {
+        await redis.del(key);
+        console.log(`[DEBUG] Deleted event with ID: ${event.event_id}`);
+      }
     }
+
+    // Delete the venue itself
+    const venueKey = `venue:${venue_id}`;
+    const venueKeyType = await redis.type(venueKey);
+
+    if (venueKeyType === 'hash') {
+      const result = await redis.del(venueKey);
+      console.log(`[DEBUG] Deleted venue with ID: ${venue_id}`);
+      return result;
+    } else {
+      console.warn(`[WARN] Venue key ${venueKey} is not a hash. Skipping deletion.`);
+      return null;
+    }
+  } catch (err) {
+    console.error("Error deleting venue:", err);
+    throw err;
+  }
 }
 
 export async function getVenueByID(venue_id) {
@@ -288,6 +310,24 @@ export async function getVenueByID(venue_id) {
     return venue;
   } catch (err) {
     console.error("Error fetching venue by ID:", err);
+    throw err;
+  }
+}
+
+export async function getReferenceByID(reference_id) {
+  console.log("getReferenceByID", reference_id);
+
+  try {
+    // Fetch the event by reference ID
+    const event = await redis.hgetall(`event:${reference_id}`);
+    if (!event || Object.keys(event).length === 0) {
+      console.warn(`Event with ID ${reference_id} not found`);
+      return null; // Return null if event is not found
+    }
+
+    return event;
+  } catch (err) {
+    console.error("Error fetching reference by ID:", err);
     throw err;
   }
 }

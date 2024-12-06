@@ -43,16 +43,23 @@ router.get("/references", async (req, res, next) => {
 
 router.get("/references/:reference_id/edit", async (req, res, next) => {
   const reference_id = req.params.reference_id;
+  const msg = req.query.msg || null;
 
   try {
     const ref = await myDb.getReferenceByID(reference_id);
-    const authors = await myDb.getAuthorsByReferenceID(reference_id);
+    if (!ref) {
+      return res.status(404).send(`Reference with ID ${reference_id} not found`);
+    }
+    
+    const venues = await myDb.getAuthors("", 1, 100); 
 
     res.render("./pages/editReference", {
       ref,
-      authors,
+      venues,
+      msg,
     });
   } catch (err) {
+    console.error("Error in /references/:reference_id/edit:", err);
     next(err);
   }
 });
@@ -191,7 +198,7 @@ router.get("/authors/:venue_id/delete", async (req, res, next) => {
     const deleteResult = await myDb.deleteVenueByID(venueId);
     console.log("delete", deleteResult);
 
-    if (deleteResult && deleteResult.venueDeleted === 1) {
+    if (deleteResult === 1) {
       res.redirect("/authors/?msg=Venue Deleted");
     } else {
       res.redirect("/authors/?msg=Error Deleting Venue");
